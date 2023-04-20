@@ -3,3 +3,5 @@
 
 ## Renewed Library
 This is a collection of functions and framework intergration used for Renewed-Scripts, feel free to use it in your own scripts if you feel like or improve anything by doing a PR.
+
+Also thanks to Overextended for some of the bridge logic specifically the job versions from ox_inventory :)
