@@ -69,6 +69,8 @@ AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
     local Player = Players[source]
     if not Player then return end
 
+    TriggerEvent('Renewed-Lib:server:JobUpdate', source, Player.job, job.name)
+
     Player.Groups[Player.job] = nil
     Player.Groups[job.name] = job.grade.level
     Player.job = job.name
@@ -77,6 +79,8 @@ end)
 AddEventHandler('QBCore:Server:OnGangUpdate', function(source, job)
     local Player = Players[source]
     if not Player then return end
+
+    TriggerEvent('Renewed-Lib:server:JobUpdate', source, Player.gang, job.name)
 
     Player.Groups[Player.gang] = nil
     Player.Groups[job.name] = job.grade.level

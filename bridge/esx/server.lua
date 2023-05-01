@@ -77,6 +77,9 @@ end
 AddEventHandler('esx:setJob', function(source, job, lastJob)
     local Player = Players[source]
     if not Player then return end
+
+    TriggerEvent('Renewed-Lib:server:JobUpdate', source, lastJob.name, job.name)
+
 	Player.groups[lastJob.name] = nil
 	Player.groups[job.name] = job.grade
 end)
