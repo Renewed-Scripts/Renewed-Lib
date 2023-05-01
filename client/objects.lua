@@ -1,41 +1,44 @@
 local Objects = {}
 
---[[
-  This is quite messy compared to peds will probably rewrite it later on
-]]
-
-
 local CreateObject = CreateObject
 local GetEntityCoords = GetEntityCoords
 local SetEntityHeading = SetEntityHeading
 local SetModelAsNoLongerNeeded = SetModelAsNoLongerNeeded
 local DeleteObject = DeleteObject
+local SetEntityAsMissionEntity = SetEntityAsMissionEntity
 local GetInvokingResource = GetInvokingResource
 
-local function SpawnObject(id)
-  local item = Objects[id]
+local function SpawnObject(payload)
+  lib.requestModel(payload.object)
 
-  lib.requestModel(item.object)
+  local obj = CreateObject(payload.object, payload.coords.x, payload.coords.y, payload.coords.z, false, true, true)
+  SetEntityHeading(obj, payload.heading)
 
-  local obj = CreateObject(item.object, item.coords.x, item.coords.y, item.coords.z, false, true, true)
-  SetEntityHeading(obj, item.heading)
 
-  if item.snapGround then PlaceObjectOnGroundProperly(obj) end
-  if item.freeze ~= nil then FreezeEntityPosition(obj, item.freeze) end
-  if item.canClimb ~= nil then SetCanClimbOnEntity(obj, item.canClimb) end
+  if payload.snapGround then
+    PlaceObjectOnGroundProperly(obj)
+  end
 
-  if item.anim and item.animSpeed then
+  if payload.freeze ~= nil then
+    FreezeEntityPosition(obj, payload.freeze)
+  end
+
+  if payload.canClimb ~= nil then
+    SetCanClimbOnEntity(obj, payload.canClimb)
+  end
+
+  if payload.anim and payload.animSpeed then
     SetEntityMaxSpeed(obj, 100)
-    SetEntityAnimSpeed(obj, item.anim[1], item.anim[2], item.animSpeed)
+    SetEntityAnimSpeed(obj, payload.anim[1], payload.anim[2], payload.animSpeed)
   end
 
-  SetModelAsNoLongerNeeded(item.object)
-
-  if item.target then
-    exports.ox_target:addLocalEntity(obj, item.target)
+  if payload.target then
+    exports.ox_target:addLocalEntity(obj, payload.target)
   end
 
-  item.spawned = obj
+  SetModelAsNoLongerNeeded(payload.object)
+
+  return obj
 end
 
 function Renewed.addObject(payload)
@@ -48,20 +51,18 @@ function Renewed.addObject(payload)
     local item = payload[i]
     item.resource = resource
 
+    if #(pCoords - item.coords) < item.dist then
+      item.spawned = SpawnObject(item)
+    end
+
     objectSize += 1
     Objects[objectSize] = item
-
-    if #(pCoords - item.coords) < item.dist then
-      SpawnObject(objectSize)
-    end
   end
 end
 
 local function getObject(id)
   for i = 1, #Objects do
-      local item = Objects[i]
-
-      if item.id == id then
+      if Objects[i].id == id then
           return i
       end
   end
@@ -75,6 +76,8 @@ local function forceDeleteEntity(id)
       exports.ox_target:removeLocalEntity(item.spawned, item.targets[i]?.name)
     end
   end
+
+  SetEntityAsMissionEntity(item.spawned, false, true)
   DeleteObject(item.spawned)
   item.spawned = false
 end
@@ -134,11 +137,11 @@ CreateThread(function()
         local item = Objects[i]
         local isClose = #(pCoords - item.coords) < item.dist
 
-        if item.spawned and not isClose then
+        if not isClose and item.spawned then
           forceDeleteEntity(i)
           Wait(0)
-        elseif not item.spawned and isClose then
-          SpawnObject(i)
+        elseif isClose and (not item.spawned or not DoesEntityExist(item.spawned)) then
+          item.spawned = SpawnObject(item)
           Wait(0)
         end
 
