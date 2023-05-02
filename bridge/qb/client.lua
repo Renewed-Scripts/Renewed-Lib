@@ -8,6 +8,8 @@ end
 
 -- Group Updaters --
 RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
+    if not Player.Group then return end
+
     Player.Group[Player.job] = nil
     Player.Group[job.name] = job.grade.level
     Player.job = job.name
@@ -16,6 +18,8 @@ RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
 end)
 
 RegisterNetEvent('QBCore:Client:OnGangUpdate', function(job)
+    if not Player.Group then return end
+
     Player.Group[Player.gang] = nil
     Player.Group[job.name] = job.grade.level
     Player.gang = job.name
