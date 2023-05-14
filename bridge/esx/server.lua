@@ -87,7 +87,7 @@ end)
 AddEventHandler('esx:playerLoaded', function(source)
     local Player = ESX.GetPlayerFromId(source)
 
-    Players[PlayerData.source] = {
+    Players[source] = {
         Groups = {
             [Player.job.name] = Player.job.grade,
         },
