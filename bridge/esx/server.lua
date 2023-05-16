@@ -80,8 +80,8 @@ AddEventHandler('esx:setJob', function(source, job, lastJob)
 
     TriggerEvent('Renewed-Lib:server:JobUpdate', source, lastJob.name, job.name)
 
-	Player.groups[lastJob.name] = nil
-	Player.groups[job.name] = job.grade
+	Player.Groups[lastJob.name] = nil
+	Player.Groups[job.name] = job.grade
 end)
 
 AddEventHandler('esx:playerLoaded', function(source)
