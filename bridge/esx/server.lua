@@ -58,8 +58,8 @@ function Renewed.addNeeds(src, needs)
     if type(needs) ~= "table" then return end
     if not Players[src] then return end
 
-    local hunger = needs.hunger * 1000 or 0
-    local thirst = needs.thirst * 1000 or 0
+    local hunger = needs.hunger * 10000 or 0
+    local thirst = needs.thirst * 10000 or 0
 
     if hunger > 0 then
         TriggerClientEvent('esx_status:add', src, 'hunger', hunger)
