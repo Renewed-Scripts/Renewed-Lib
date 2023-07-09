@@ -5,6 +5,7 @@ local GetEntityCoords = GetEntityCoords
 local SetEntityHeading = SetEntityHeading
 local SetModelAsNoLongerNeeded = SetModelAsNoLongerNeeded
 local DeleteObject = DeleteObject
+local PlaceObjectOnGroundProperly = PlaceObjectOnGroundProperly
 local SetEntityAsMissionEntity = SetEntityAsMissionEntity
 local GetInvokingResource = GetInvokingResource
 
@@ -68,8 +69,8 @@ local function getObject(id)
   end
 end
 
-local function forceDeleteEntity(id)
-  local item = Objects[id]
+local function forceDeleteEntity(item)
+  if not item then return end
 
   if item.targets then
     for i = 1, #item.targets do
@@ -89,14 +90,13 @@ function Renewed.changeObject(id, newObject, newCoords)
 
   local item = Objects[objId]
 
-  local obj = type(newObject) == "string" and joaat(newObject) or newObject
-  item.object = obj
+  item.object = type(newObject) == "string" and joaat(newObject) or newObject
   item.coords = newCoords or item.coords
 
   if not item.spawned then return end
 
-  forceDeleteEntity(objId)
-  SpawnObject(id)
+  forceDeleteEntity(item)
+  item.spawned = SpawnObject(item)
 end
 
 function Renewed.changeAnim(id, anim, animSpeed)
@@ -115,14 +115,14 @@ function Renewed.changeAnim(id, anim, animSpeed)
 end
 
 function Renewed.removeObject(id)
-  local objId = getObject(id)
+  local objId = id and getObject(id)
 
   if not objId then return end
 
   local item = Objects[objId]
 
   if item.spawned then
-    forceDeleteEntity(id)
+    forceDeleteEntity(item)
   end
 
   table.remove(Objects, objId)
@@ -138,7 +138,7 @@ CreateThread(function()
         local isClose = #(pCoords - item.coords) < item.dist
 
         if not isClose and item.spawned then
-          forceDeleteEntity(i)
+          forceDeleteEntity(item)
           Wait(0)
         elseif isClose and (not item.spawned or not DoesEntityExist(item.spawned)) then
           item.spawned = SpawnObject(item)
@@ -151,14 +151,14 @@ CreateThread(function()
     end
 end)
 
-local function removeResourceObj(resource)
+function Renewed.removeResourceObj(resource)
   resource = resource or GetInvokingResource() or cache.resource
   for i = #Objects, 1, -1 do
     local item = Objects[i]
 
     if item.resource == resource then
       if item.spawned then
-        forceDeleteEntity(i)
+        forceDeleteEntity(item)
       end
 
       table.remove(Objects, i)
@@ -167,7 +167,7 @@ local function removeResourceObj(resource)
 end
 
 AddEventHandler('onClientResourceStop', function(resource)
-  removeResourceObj(resource)
+  Renewed.removeResourceObj(resource)
 end)
 
 
@@ -188,7 +188,10 @@ local function finishPlacing()
   placingObj = nil
 end
 
-function Renewed.placeObject(object, dist, snapGround, text, allowedMats)
+
+local IsControlJustReleased = IsControlJustReleased
+local SetEntityCoords = SetEntityCoords
+function Renewed.placeObject(object, dist, snapGround, text, allowedMats, offset)
   if placingObj then return end
   if not object then return "You didnt define any object to place" end
 
@@ -219,6 +222,11 @@ function Renewed.placeObject(object, dist, snapGround, text, allowedMats)
   while placingObj do
     local hit, _, coords, _, materialHash = lib.raycast.cam(1, 4)
     if hit then
+
+      if offset then
+        coords = coords + offset
+      end
+
       SetEntityCoords(placingObj, coords.x, coords.y, coords.z)
       local objCoords = GetEntityCoords(placingObj)
       local distCheck = #(GetEntityCoords(cache.ped) - objCoords)
@@ -264,8 +272,6 @@ function Renewed.placeObject(object, dist, snapGround, text, allowedMats)
         if heading < 0 then heading = 360.0 end
       end
     end
-
-    Wait(0)
   end
 end
 
