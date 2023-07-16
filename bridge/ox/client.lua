@@ -10,6 +10,10 @@ function Renewed.getPlayerGroup()
     return Player and Ox.GetPlayerData().groups
 end
 
+function Renewed.getCharId()
+    return Player and Player.charId
+end
+
 AddEventHandler('ox:playerLoaded', function(data)
     Player = {
         charId = data.charid,

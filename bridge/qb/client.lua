@@ -6,6 +6,10 @@ function Renewed.getPlayerGroup()
     return Player and Player.Group or {}
 end
 
+function Renewed.getCharId()
+    return Player and Player.charId
+end
+
 -- Group Updaters --
 RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
     if not Player.Group then return end

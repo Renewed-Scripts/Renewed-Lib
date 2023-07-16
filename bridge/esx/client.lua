@@ -5,6 +5,10 @@ function Renewed.getPlayerGroup()
     return Player and Player.Group or {}
 end
 
+function Renewed.getCharId()
+    return Player and Player.charId
+end
+
 RegisterNetEvent('esx:setPlayerData', function(key, value)
 	if not Loaded or GetInvokingResource() ~= 'es_extended' then return end
 
