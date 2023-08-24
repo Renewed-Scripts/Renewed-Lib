@@ -1,5 +1,9 @@
 local QBCore = exports['qb-core']:GetCoreObject()
-local Players = {}
+local Players, Jobs, Gangs = {}, {}, {}
+
+function Renewed.getGroups(src)
+    return Players[src] and Players[src].Groups or false
+end
 
 function Renewed.hasGroup(src, group, grade)
     local Player = Players[src]
@@ -12,12 +16,38 @@ function Renewed.hasGroup(src, group, grade)
     return true
 end
 
+function Renewed.isGroupAuth(group, grade)
+    grade = tostring(grade)
+    local numGrade = tonumber(grade)
+    local Group = Jobs[group] or Gangs[group]
+    local auth = false
+    if Group then
+        auth = Group.grades[grade] and Group.grades[grade].isboss or Group.grades[numGrade] and Group.grades[numGrade].isboss
+    end
+    return auth
+end
+
 function Renewed.getCharId(src)
     return Players[src] and Players[src].charId or false
 end
 
 function Renewed.getCharName(src)
     return Players[src] and Players[src].name or false
+end
+
+local query = 'SELECT charinfo FROM players WHERE citizenid = ?'
+function Renewed.getCharNameById(identifier)
+    local charinfo = MySQL.prepare.await(query, {identifier})
+    if not charinfo then return false end
+    charinfo = json.decode(charinfo)
+    local fullname = ("%s %s"):format(charinfo.firstname, charinfo.lastname)
+    return fullname
+end
+
+function Renewed.getMoney(src, mType)
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    return Player.PlayerData.money[mType]
 end
 
 function Renewed.removeMoney(src, amount, mType, reason)
@@ -69,7 +99,7 @@ AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
     local Player = Players[source]
     if not Player then return end
 
-    TriggerEvent('Renewed-Lib:server:JobUpdate', source, Player.job, job.name)
+    TriggerEvent('Renewed-Lib:server:JobUpdate', source, Player.job, job.name, job.grade.level)
 
     Player.Groups[Player.job] = nil
     Player.Groups[job.name] = job.grade.level
@@ -80,15 +110,21 @@ AddEventHandler('QBCore:Server:OnGangUpdate', function(source, job)
     local Player = Players[source]
     if not Player then return end
 
-    TriggerEvent('Renewed-Lib:server:JobUpdate', source, Player.gang, job.name)
+    TriggerEvent('Renewed-Lib:server:JobUpdate', source, Player.gang, job.name, job.grade.level)
 
     Player.Groups[Player.gang] = nil
     Player.Groups[job.name] = job.grade.level
     Player.gang = job.name
 end)
 
-AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
-    local PlayerData = Player.PlayerData
+local function UpdatePlayerData(PlayerData)
+    local success, result = pcall(function()
+        return exports['qb-phone']:getJobs(PlayerData.citizenid)
+    end)
+    if success then
+        PlayerData.renewedJobs = result
+    end
+
     Players[PlayerData.source] = {
         Groups = {
             [PlayerData.job.name] = PlayerData.job.grade.level,
@@ -99,6 +135,31 @@ AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
         charId = PlayerData.citizenid,
         name = ('%s %s'):format(PlayerData.charinfo.firstname, PlayerData.charinfo.lastname)
     }
+
+    if PlayerData.renewedJobs then
+        for k,v in pairs(PlayerData.renewedJobs) do
+            if k ~= Players[PlayerData.source].job then
+                Players[PlayerData.source].Groups[k] = v.grade
+            end
+        end
+    end
+end
+
+AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
+    UpdatePlayerData(Player.PlayerData)
+end)
+
+
+CreateThread(function()
+    Wait(250)
+    Jobs = QBCore.Shared.Jobs
+    Gangs = QBCore.Shared.Gangs
+    for _, sourceId in ipairs(GetPlayers()) do
+        local Player = QBCore.Functions.GetPlayer(tonumber(sourceId))
+        if not Player then return end
+        UpdatePlayerData(Player.PlayerData)
+        Wait(69)
+    end
 end)
 
 AddEventHandler('QBCore:Server:OnPlayerUnload', function(source)
