@@ -1,5 +1,9 @@
 local ESX = exports.es_extended:getSharedObject()
-local Players = {}
+local Players, Jobs = {}, {}
+
+function Renewed.getGroups(src)
+    return Players[src] and Players[src].Groups or false
+end
 
 function Renewed.hasGroup(src, group, grade)
     local Player = Players[src]
@@ -12,6 +16,12 @@ function Renewed.hasGroup(src, group, grade)
     return true
 end
 
+function Renewed.isGroupAuth(job, grade)
+    grade = tostring(grade)
+    local numGrade = tonumber(grade)
+    return Jobs[job].grades[grade] and Jobs[job].grades[grade].name == 'boss' or Jobs[job].grades[numGrade] and Jobs[job].grades[numGrade].name == 'boss'
+end
+
 function Renewed.getCharId(src)
     return Players[src] and Players[src].charId or false
 end
@@ -20,11 +30,25 @@ function Renewed.getCharName(src)
     return Players[src] and Players[src].name or false
 end
 
+function Renewed.getCharNameById(identifier)
+    local result = MySQL.prepare.await('SELECT firstname, lastname FROM users WHERE identifier = ?', {identifier})
+    if not result then return false end
+    local fullname = ("%s %s"):format(result.firstname, result.lastname)
+    return fullname
+end
+
 -- Converting qb money to esx money --
 local convertMoney = {
     ["cash"] = "money",
     ["bank"] = "bank"
 }
+
+function Renewed.getMoney(src, mType)
+    local Player = ESX.GetPlayerFromId(src)
+    if not Player then return end
+    mType = convertMoney[mType] or mType
+    return Player.getAccount(mType).money
+end
 
 function Renewed.removeMoney(src, amount, mType, reason)
     if not Players[src] then return false end
@@ -78,13 +102,13 @@ AddEventHandler('esx:setJob', function(source, job, lastJob)
     local Player = Players[source]
     if not Player then return end
 
-    TriggerEvent('Renewed-Lib:server:JobUpdate', source, lastJob.name, job.name)
+    TriggerEvent('Renewed-Lib:server:JobUpdate', source, lastJob.name, job.name, job.grade)
 
 	Player.Groups[lastJob.name] = nil
 	Player.Groups[job.name] = job.grade
 end)
 
-AddEventHandler('esx:playerLoaded', function(source)
+local function UpdatePlayerData(source)
     local Player = ESX.GetPlayerFromId(source)
 
     Players[source] = {
@@ -94,6 +118,21 @@ AddEventHandler('esx:playerLoaded', function(source)
         charId = Player.identifier,
         name = Player.name
     }
+
+end
+
+AddEventHandler('esx:playerLoaded', function(source)
+    UpdatePlayerData(source)
+end)
+
+CreateThread(function()
+    Wait(250)
+    ESX.RefreshJobs()
+    Jobs = ESX.GetJobs()
+    for _, sourceId in ipairs(GetPlayers()) do
+        UpdatePlayerData(sourceId)
+        Wait(69)
+    end
 end)
 
 AddEventHandler('esx:playerDropped', function(source)
