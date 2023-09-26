@@ -7,5 +7,5 @@ chunk()
 function Renewed.getCharId(source)
     local player = Ox.GetPlayer(source)
 
-    return player and player.charid
+    return player and player.charId
 end
