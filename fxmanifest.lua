@@ -5,7 +5,7 @@ lua54 'yes'
 
 author "Renewed Scripts | FjamZoo#0001"
 description 'Renewed Library for a bundle of functions / scripts for servers to use.'
-version '1.1.2'
+version '1.1.3'
 
 shared_script {
     '@ox_lib/init.lua',

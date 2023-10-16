@@ -96,6 +96,16 @@ function Renewed.addNeeds(src, needs)
     return true
 end
 
+function Renewed.getSourceByCharId(charId)
+    for k, v in pairs(Players) do
+        if v.charId == charId then
+            return k
+        end
+    end
+
+    return false
+end
+
 
 -- Group Updaters --
 AddEventHandler('esx:setJob', function(source, job, lastJob)
@@ -123,6 +133,7 @@ end
 
 AddEventHandler('esx:playerLoaded', function(source)
     UpdatePlayerData(source)
+    TriggerEvent('Renewed-Lib:server:playerLoaded', source, Players[source])
 end)
 
 CreateThread(function()
@@ -136,6 +147,15 @@ CreateThread(function()
 end)
 
 AddEventHandler('esx:playerDropped', function(source)
-    if not Players[source] then return end
-    Players[source] = nil
+    if Players[source] then
+        TriggerEvent('Renewed-Lib:server:playerRemoved', source, Players[source])
+        Players[source] = nil
+    end
+end)
+
+AddEventHandler('playerDropped', function()
+    if Players[source] then
+        TriggerEvent('Renewed-Lib:server:playerRemoved', source, Players[source])
+        Players[source] = nil
+    end
 end)

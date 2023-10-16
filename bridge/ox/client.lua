@@ -16,7 +16,7 @@ end
 
 AddEventHandler('ox:playerLoaded', function(data)
     Player = {
-        charId = data.charid,
+        charId = data.charId,
         name = data.name
     }
 
