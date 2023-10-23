@@ -11,8 +11,6 @@ AddStateBagChangeHandler('entityParticle', nil, function(bagName, _, value)
     end
 
     if value and type(value) == 'table' then
-        if #(GetEntityCoords(cache.ped) - GetEntityCoords(entity)) > 80 then return end
-
         local offset, rotation = value.offset, value.rotation
         lib.requestNamedPtfxAsset(value.dict, 1000)
 
