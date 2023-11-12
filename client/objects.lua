@@ -87,7 +87,7 @@ local function forceDeleteEntity(item)
   item.spawned = false
 end
 
-function Renewed.changeObject(id, newObject, newCoords)
+function Renewed.changeObject(id, newObject, newCoords, newHeading)
   local objId = getObject(id)
 
   if not objId then return end
@@ -96,11 +96,12 @@ function Renewed.changeObject(id, newObject, newCoords)
 
   item.object = type(newObject) == "string" and joaat(newObject) or newObject
   item.coords = newCoords or item.coords
+  item.heading = newHeading or item.heading
 
-  if not item.spawned then return end
-
-  forceDeleteEntity(item)
-  item.spawned = SpawnObject(item)
+  if item.spawned then
+    forceDeleteEntity(item)
+    item.spawned = SpawnObject(item)
+  end
 end
 
 function Renewed.changeAnim(id, anim, animSpeed)
