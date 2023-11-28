@@ -97,6 +97,24 @@ function Renewed.removePed(id)
     end
 end
 
+function Renewed.setPedCoords(id, coords, heading)
+    if not id then return end
+
+    for i = 1, #Peds do
+        local item = Peds[i]
+        if item.id == id then
+            item.coords = coords
+            item.heading = heading
+
+            if item.spawned then
+                SetEntityCoords(item.spawned, coords.x, coords.y, coords.z, false, false, false, false)
+                SetEntityHeading(item.spawned, heading)
+            end
+            break
+        end
+    end
+end
+
 AddEventHandler('onClientResourceStop', function(resource)
     for i = #Peds, 1, -1 do
         local item = Peds[i]
