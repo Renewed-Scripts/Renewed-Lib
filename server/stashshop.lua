@@ -1,5 +1,6 @@
 if not lib.checkDependency('ox_inventory', '2.37.3') then return end
 
+local ox_inventory = exports.ox_inventory
 
 local inventories = {}
 local openedBy = {}
@@ -9,23 +10,23 @@ local inventoryHook
 
 local function addItemToSecondSlot(id, price, payload)
     SetTimeout(50, function()
-        local addMoney = exports.ox_inventory:AddItem(id, 'money', price, nil, 1)
+        local addMoney = ox_inventory:AddItem(id, 'money', price, nil, 1)
 
         if addMoney then
-            exports.ox_inventory:RemoveItem(payload.fromInventory, payload.fromSlot.name, payload.count, payload.fromSlot.metadata, payload.fromSlot.slot)
-            exports.ox_inventory:AddItem(id, payload.fromSlot.name, payload.count, payload.fromSlot.metadata, 2)
+            ox_inventory:RemoveItem(payload.fromInventory, payload.fromSlot.name, payload.count, payload.fromSlot.metadata, payload.fromSlot.slot)
+            ox_inventory:AddItem(id, payload.fromSlot.name, payload.count, payload.fromSlot.metadata, 2)
 
             inventories[id] += 1
-            exports.ox_inventory:SetSlotCount(id, inventories[id])
+            ox_inventory:SetSlotCount(id, inventories[id])
         end
     end)
 end
 
 local function resetInventory(source, id)
     SetTimeout(100, function()
-        local items = exports.ox_inventory:GetItems(id)
-        exports.ox_inventory:ClearInventory(id)
-        exports.ox_inventory:SetSlotCount(id, 2)
+        local items = ox_inventory:GetInventoryItems(id)
+        ox_inventory:ClearInventory(id)
+        ox_inventory:SetSlotCount(id, 2)
         inventories[id] = 2
 
         lib.logger(source, ('renewed_stashitems:%s'):format(id), items)
@@ -33,49 +34,43 @@ local function resetInventory(source, id)
     end)
 end
 
-local function prepStash(id, label, weight)
-    exports.ox_inventory:RegisterStash(id, label, 2, weight)
-    exports.ox_inventory:ClearInventory(id, false)
+local function prepStash(id, label, coords)
+    ox_inventory:RegisterStash(id, label, 2, 9000000, nil, nil, coords and vec3(coords.x, coords.y, coords.z) or nil)
+    ox_inventory:ClearInventory(id, false)
 end
 
 local function deleteHook()
-    exports.ox_inventory:removeHooks(inventoryHook)
+    ox_inventory:removeHooks(inventoryHook)
     inventoryHook = nil
 end
 
-local function getInventoryArray()
-    local ids = {}
-    local amount = 0
+local function createSaleStash(id, label, items, coords)
+    id = ('stashshop_%s'):format(id)
 
-    for k, _ in pairs(inventories) do
-        amount += 1
-        ids[amount] = k
-    end
-
-    return ids
-end
-
-local function createSaleStash(id, label, weight, items)
     if inventories[id] then
         return
     end
 
+    prepStash(id, label, coords)
+
     inventories[id] = 2
     shops[id] = items
-
-    prepStash(id, label, weight)
 
     if inventoryHook then
         deleteHook()
     end
 
-    inventoryHook = exports.ox_inventory:registerHook('swapItems', function(payload)
+    inventoryHook = ox_inventory:registerHook('swapItems', function(payload)
         local source = payload.source
         local item = payload.fromSlot.name:lower()
         local addItem = inventories[payload.toInventory]
         local inventory = payload.toInventory == source and payload.fromInventory or payload.toInventory
 
         if item == 'money' and not addItem then
+            if payload.count < payload.fromSlot.count then
+                return false
+            end
+
             resetInventory(source, inventory)
             return true
         end
@@ -99,11 +94,11 @@ local function createSaleStash(id, label, weight, items)
 
                 return false
             else
-                local added = exports.ox_inventory:AddItem(inventory, 'money', price, nil, 1)
+                local added = ox_inventory:AddItem(inventory, 'money', price, nil, 1)
 
                 if added then
                     slotCount += 1
-                    exports.ox_inventory:SetSlotCount(inventory, slotCount)
+                    ox_inventory:SetSlotCount(inventory, slotCount)
 
                     inventories[inventory] = slotCount
                 end
@@ -111,11 +106,11 @@ local function createSaleStash(id, label, weight, items)
                 return added
             end
         elseif payload.fromSlot.slot > 1 and payload.fromSlot.slot == slotCount-1 then
-            local removed = exports.ox_inventory:RemoveItem(inventory, 'money', price, nil, 1)
+            local removed = ox_inventory:RemoveItem(inventory, 'money', price, nil, 1)
 
             if removed then
                 slotCount -= 1
-                exports.ox_inventory:SetSlotCount(inventory, slotCount)
+                ox_inventory:SetSlotCount(inventory, slotCount)
 
                 inventories[inventory] = slotCount
             end
@@ -125,7 +120,9 @@ local function createSaleStash(id, label, weight, items)
 
         return false
     end, {
-        inventoryFilter = getInventoryArray()
+        inventoryFilter = {
+            '^stashshop_[%w]+'
+        }
     })
 end exports('CreateSaleStash', createSaleStash)
 
