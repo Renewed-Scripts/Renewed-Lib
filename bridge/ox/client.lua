@@ -17,7 +17,7 @@ end
 RegisterNetEvent('ox:setGroup', function(name, grade)
     Player.group[name] = grade
 
-    TriggerEvent('Renewed-Lib:client:UpdateGroup', Player.Group)
+    TriggerEvent('Renewed-Lib:client:UpdateGroup', Player.group)
 end)
 
 AddEventHandler('ox:playerLoaded', function(data)
