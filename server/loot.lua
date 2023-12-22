@@ -50,7 +50,10 @@ local function generateLoot(id, minLoot, maxLoot)
 
             if amount and amount > 0 then
                 lootAmount += 1
-                loot[lootAmount] = { item.name, amount }
+                loot[item.name] = {
+                    amount = amount,
+                    metadata = item.metadata or nil
+                }
 
                 if maxLoot and lootAmount >= maxLoot then
                     break
