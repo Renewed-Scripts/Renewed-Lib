@@ -16,6 +16,10 @@ function Renewed.hasGroup(src, group, grade)
     return true
 end
 
+function Renewed.getPlayer(source)
+    return Players[source]
+end
+
 function Renewed.isGroupAuth(group, grade)
     grade = tostring(grade)
     local numGrade = tonumber(grade)

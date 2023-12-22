@@ -10,6 +10,14 @@ function Renewed.getCharId(source)
     return player and player.charId
 end
 
+Renewed.getPlayer = Ox.GetPlayer
+
+function Renewed.getPlayerGroups(source)
+    local player = Ox.GetPlayer(source)
+
+    return player and player.getGroups()
+end
+
 function Renewed.getCharName(source)
     local player = Ox.GetPlayer(source)
 

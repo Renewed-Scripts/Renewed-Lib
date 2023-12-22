@@ -7,17 +7,24 @@ chunk()
 local Player = {}
 
 function Renewed.getPlayerGroup()
-    return Player and Ox.GetPlayerData().groups
+    return Player and Player.group
 end
 
 function Renewed.getCharId()
     return Player and Player.charId
 end
 
+RegisterNetEvent('ox:setGroup', function(name, grade)
+    Player.group[name] = grade
+
+    TriggerEvent('Renewed-Lib:client:UpdateGroup', Player.Group)
+end)
+
 AddEventHandler('ox:playerLoaded', function(data)
     Player = {
         charId = data.charId,
-        name = data.name
+        name = data.name,
+        group = Ox.GetPlayerData().groups
     }
 
     TriggerEvent('Renewed-Lib:client:PlayerLoaded', Player)
