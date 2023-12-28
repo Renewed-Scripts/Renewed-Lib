@@ -130,11 +130,10 @@ AddEventHandler('QBCore:Server:OnGangUpdate', function(source, job)
 end)
 
 local function UpdatePlayerData(PlayerData)
-    local success, result = pcall(function()
-        return exports['qb-phone']:getJobs(PlayerData.citizenid)
-    end)
-    if success then
-        PlayerData.renewedJobs = result
+    local renewedJobs
+    local _ = pcall(function() renewedJobs = exports['qb-phone']:getJobs(PlayerData.citizenid) end)
+    if renewedJobs then
+        PlayerData.renewedJobs = renewedJobs
     end
 
     Players[PlayerData.source] = {
