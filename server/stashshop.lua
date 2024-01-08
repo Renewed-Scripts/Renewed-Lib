@@ -66,6 +66,10 @@ local function createSaleStash(id, label, items, coords)
         local addItem = inventories[payload.toInventory]
         local inventory = payload.toInventory == source and payload.fromInventory or payload.toInventory
 
+        if payload.toInventory == payload.fromInventory then
+            return
+        end
+
         if item == 'money' and not addItem then
             if payload.count < payload.fromSlot.count then
                 return false
