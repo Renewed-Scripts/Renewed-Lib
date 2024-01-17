@@ -72,6 +72,12 @@ function Renewed.getMoney(src, mType)
     if not Player then return end
     return Player.PlayerData.money[mType]
 end
+local GET_OFFLINEMONEY = 'SELECT money FROM players WHERE citizenid = ?'
+function Renewed.getOfflineMoney(id)
+    local result = MySQL.query.await(GET_OFFLINEMONEY, {id})
+    if not result then return false end
+    return {bank = result.bank, cash = result.cash}
+end
 
 function Renewed.removeMoney(src, amount, mType, reason)
     local Player = QBCore.Functions.GetPlayer(src)
@@ -89,6 +95,16 @@ function Renewed.addMoney(src, amount, mType, reason)
     if not Player then return end
 
     return Player.Functions.AddMoney(mType, amount, reason or "unknown")
+end
+
+local ADD_OFFLINEMONEY = "UPDATE players SET money = JSON_SET(money, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(money, CONCAT('$.', ?))) + ?) WHERE citizenid = ?"
+function Renewed.addOfflineMoney(identifier, amount, mType)
+    return MySQL.prepare.await(ADD_OFFLINEMONEY, {mType, mType, amount, identifier})
+end
+
+local REMOVE_OFFLINEMONEY = "UPDATE players SET money = JSON_SET(money, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(money, CONCAT('$.', ?))) - ?) WHERE citizenid = ?"
+function Renewed.removeOfflineMoney(identifier, amount, mType)
+    return MySQL.prepare.await(REMOVE_OFFLINEMONEY, {mType, mType, amount, identifier})
 end
 
 function Renewed.addNeeds(src, needs)
