@@ -46,8 +46,9 @@ function Renewed.getCharName(src)
     return Players[src] and Players[src].name or false
 end
 
+local GET_CHARINFO = 'SELECT firstname, lastname FROM users WHERE identifier = ?'
 function Renewed.getCharNameById(identifier)
-    local result = MySQL.prepare.await('SELECT firstname, lastname FROM users WHERE identifier = ?', {identifier})
+    local result = MySQL.prepare.await(GET_CHARINFO, {identifier})
     if not result then return false end
     local fullname = ("%s %s"):format(result.firstname, result.lastname)
     return fullname
@@ -64,6 +65,13 @@ function Renewed.getMoney(src, mType)
     if not Player then return end
     mType = convertMoney[mType] or mType
     return Player.getAccount(mType).money
+end
+
+local GET_OFFLINEMONEY = 'SELECT accounts FROM users WHERE identifier = ?'
+function Renewed.getOfflineMoney(id)
+    local result = MySQL.query.await(GET_OFFLINEMONEY, {id})
+    if not result then return false end
+    return {bank = result.bank, cash = result.money}
 end
 
 function Renewed.removeMoney(src, amount, mType, reason)
@@ -92,6 +100,18 @@ function Renewed.addMoney(src, amount, mType, reason)
     Player.addAccountMoney(type, amount, reason)
 
     return true
+end
+
+local ADD_OFFLINEMONEY = "UPDATE users SET accounts = JSON_SET(accounts, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(accounts, CONCAT('$.', ?))) + ?) WHERE identifier = ?"
+function Renewed.addOfflineMoney(identifier, amount, mType)
+    local type = convertMoney[mType] or mType
+    return MySQL.prepare.await(ADD_OFFLINEMONEY, {mType, mType, amount, identifier})
+end
+
+local REMOVE_OFFLINEMONEY = "UPDATE users SET accounts = JSON_SET(accounts, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(accounts, CONCAT('$.', ?))) - ?) WHERE identifier = ?"
+function Renewed.removeOfflineMoney(identifier, amount, mType)
+    local type = convertMoney[mType] or mType
+    return MySQL.prepare.await(REMOVE_OFFLINEMONEY, {mType, mType, amount, identifier})
 end
 
 function Renewed.addNeeds(src, needs)
