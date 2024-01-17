@@ -24,6 +24,22 @@ function Renewed.getCharName(source)
     return player and ('%s %s'):format(player.firstName, player.lastName)
 end
 
+function Renewed.addStress(source, value)
+    local player = Ox.GetPlayer(source)
+
+    if player then
+        player.addStatus('stress', value)
+    end
+end
+
+function Renewed.relieveStress(source, value)
+    local player = Ox.GetPlayer(source)
+
+    if player then
+        player.removeStatus('stress', value)
+    end
+end
+
 function Renewed.getSourceByCharId(charId)
     local player = Ox.GetPlayerByFilter({ charId = tonumber(charId) })
 

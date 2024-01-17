@@ -20,6 +20,18 @@ function Renewed.getPlayer(source)
     return Players[source]
 end
 
+function Renewed.addStress(source, value)
+    value *= 10000
+    TriggerClientEvent('esx_status:add', source, 'stress', value)
+    TriggerClientEvent('HUD:Notification', source, 'Stress Gained', 'error', 1500)
+end
+
+function Renewed.relieveStress(source, value)
+    value *= 10000
+    TriggerClientEvent('HUD:Notification', source, 'Stress Relieved')
+    TriggerClientEvent('esx_status:remove', source, 'stress', value)
+end
+
 function Renewed.isGroupAuth(job, grade)
     grade = tostring(grade)
     local numGrade = tonumber(grade)

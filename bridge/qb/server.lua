@@ -20,6 +20,25 @@ function Renewed.getPlayer(source)
     return Players[source]
 end
 
+function Renewed.addStress(source, value)
+    local Player = QBCore.Functions.GetPlayer(source)
+    local stress = (Player.PlayerData.metadata.stress or 0) + value
+
+    Player.Functions.SetMetaData('stress', stress > 100 and 100 or stress)
+    TriggerClientEvent('hud:client:UpdateStress', source, stress)
+    TriggerClientEvent('QBCore:Notify', source, "Stress Gained", 'error', 1500)
+end
+
+function Renewed.relieveStress(source, value)
+    local Player = QBCore.Functions.GetPlayer(source)
+    local stress = (Player.PlayerData.metadata.stress or 0) - value
+
+    Player.Functions.SetMetaData('stress', stress < 0 and 0 or stress)
+    TriggerClientEvent('hud:client:UpdateStress', source, stress)
+    TriggerClientEvent('QBCore:Notify', source, "Stress Relieved", 'error', 1500)
+end
+
+
 function Renewed.isGroupAuth(group, grade)
     grade = tostring(grade)
     local numGrade = tonumber(grade)
