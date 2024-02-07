@@ -1,5 +1,7 @@
 local Objects = {}
 
+local playerInstance = LocalPlayer.state.instance or 0
+
 local CreateObject = CreateObject
 local GetEntityCoords = GetEntityCoords
 local SetEntityHeading = SetEntityHeading
@@ -55,6 +57,7 @@ function Renewed.addObject(payload)
   for i = 1, #payload do
     local item = payload[i]
     item.resource = resource
+    item.instance = item.instance or 0
 
     if #(pCoords - item.coords) < item.dist then
       item.spawned = SpawnObject(item)
@@ -140,14 +143,17 @@ CreateThread(function()
 
       for i = 1, objectCount do
         local item = Objects[i]
-        local isClose = #(pCoords - item.coords) < item.dist
 
-        if not isClose and item.spawned then
-          forceDeleteEntity(item)
-          Wait(0)
-        elseif isClose and (not item.spawned or not DoesEntityExist(item.spawned)) then
-          item.spawned = SpawnObject(item)
-          Wait(0)
+        if item.instance == playerInstance then
+          local isClose = #(pCoords - item.coords) < item.dist
+
+          if not isClose and item.spawned then
+            forceDeleteEntity(item)
+            Wait(0)
+          elseif isClose and (not item.spawned or not DoesEntityExist(item.spawned)) then
+            item.spawned = SpawnObject(item)
+            Wait(0)
+          end
         end
 
       end
@@ -284,3 +290,22 @@ function Renewed.stopPlacing()
   if not placingObj then return end
   finishPlacing()
 end
+
+
+AddStateBagChangeHandler('instance', ('player:%s'):format(cache.serverId), function(_, _, value)
+  playerInstance = value or 0
+
+  if table.type(Objects) ~= 'empty' then
+    local pCoords = GetEntityCoords(cache.ped)
+
+    for i = #Objects, 1, -1 do
+      local item = Objects[i]
+
+      if item.instance ~= playerInstance and item.spawned then
+        forceDeleteEntity(item)
+      elseif item.instance == playerInstance and not item.spawned and #(pCoords - item.coords) < item.dist then
+        item.spawned = SpawnObject(item)
+      end
+    end
+  end
+end)
