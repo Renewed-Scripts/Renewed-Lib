@@ -38,7 +38,8 @@ local function spawnPed(payload)
     if payload.target then
         exports.ox_target:addLocalEntity(ped, payload.target)
     elseif payload.interact then
-        exports.interact:addLocalEntityInteraction(ped, payload.interact)
+        payload.interact.entity = ped
+        exports.interact:AddLocalEntityInteraction(payload.interact)
     end
 
     SetModelAsNoLongerNeeded(payload.model)
@@ -79,7 +80,7 @@ local function deletePed(entity, target, interact)
             exports.ox_target:removeLocalEntity(entity, target[i]?.name)
         end
     elseif interact then
-        exports.interact:RemoveInteractionByEntity(entity, interact?.id)
+        exports.interact:RemoveLocalEntityInteraction(entity, interact?.id)
     end
 
     SetEntityAsMissionEntity(entity, false, true)
