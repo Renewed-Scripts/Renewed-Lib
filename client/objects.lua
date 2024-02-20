@@ -41,6 +41,8 @@ local function SpawnObject(payload)
 
   if payload.target then
     exports.ox_target:addLocalEntity(obj, payload.target)
+  elseif payload.interact then
+    exports.interact:addLocalEntityInteraction(obj, payload.interact)
   end
 
   SetModelAsNoLongerNeeded(payload.object)
@@ -83,6 +85,8 @@ local function forceDeleteEntity(item)
     for i = 1, #item.targets do
       exports.ox_target:removeLocalEntity(item.spawned, item.targets[i]?.name)
     end
+  elseif item.interact then
+    exports.interact:RemoveInteractionByEntity(item.spawned, item.interact?.id)
   end
 
   SetEntityAsMissionEntity(item.spawned, false, true)

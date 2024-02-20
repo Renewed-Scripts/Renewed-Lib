@@ -37,6 +37,8 @@ local function spawnPed(payload)
 
     if payload.target then
         exports.ox_target:addLocalEntity(ped, payload.target)
+    elseif payload.interact then
+        exports.interact:addLocalEntityInteraction(ped, payload.interact)
     end
 
     SetModelAsNoLongerNeeded(payload.model)
@@ -67,7 +69,7 @@ function Renewed.addPed(payload)
     end
 end
 
-local function deletePed(entity, target)
+local function deletePed(entity, target, interact)
     if not entity then return end
     if entity == 0 then return end
     if not DoesEntityExist(entity) then return end
@@ -76,6 +78,8 @@ local function deletePed(entity, target)
         for i = 1, #target do
             exports.ox_target:removeLocalEntity(entity, target[i]?.name)
         end
+    elseif interact then
+        exports.interact:RemoveInteractionByEntity(entity, interact?.id)
     end
 
     SetEntityAsMissionEntity(entity, false, true)
@@ -89,7 +93,7 @@ function Renewed.removePed(id)
         local item = Peds[i]
         if item.id == id then
             if item.spawned then
-                deletePed(item.spawned, item.target)
+                deletePed(item.spawned, item.target, item.interact)
             end
             table.remove(Peds, i)
             break
@@ -121,7 +125,7 @@ AddEventHandler('onClientResourceStop', function(resource)
 
         if item.resource == resource then
             if item.spawned then
-                deletePed(item.spawned, item.target)
+                deletePed(item.spawned, item.target, item.interact)
             end
             table.remove(Peds, i)
         end
@@ -138,7 +142,7 @@ CreateThread(function()
             local isClose = #(pCoords - item.coords) < item.dist
 
             if item.spawned and not isClose then
-                deletePed(item.spawned, item.target)
+                deletePed(item.spawned, item.target, item.interact)
                 item.spawned = false
                 Wait(0)
             elseif not item.spawned and isClose then
