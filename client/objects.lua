@@ -62,7 +62,7 @@ function Renewed.addObject(payload)
     item.resource = resource
     item.instance = item.instance or 0
 
-    if #(pCoords - item.coords) < item.dist then
+    if item.instance == playerInstance and #(pCoords - item.coords) < item.dist then
       item.spawned = SpawnObject(item)
     end
 
