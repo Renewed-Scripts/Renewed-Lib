@@ -125,9 +125,8 @@ function Renewed.getPedById(id)
 
     for i = 1, #Peds do
         local item = Peds[i]
-        if item.id == id then
-            if item.spawned then return item.spawned end
-            break
+        if item.spawned and item.id == id then
+            return item.spawned
         end
     end
 end
