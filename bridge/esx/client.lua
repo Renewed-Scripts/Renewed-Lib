@@ -31,6 +31,10 @@ RegisterNetEvent('esx:playerLoaded',function(xPlayer)
     TriggerEvent('Renewed-Lib:client:PlayerLoaded', Player)
 end)
 
+RegisterNetEvent('esx:setJob', function (job, lastJob)
+    LocalPlayer.state:set('renewed_service', not string.find(job.name, 'off') and job.name or false, true)
+end)
+
 RegisterNetEvent('esx:onPlayerLogout', function()
     Player = table.wipe(Player)
     TriggerEvent('Renewed-Lib:client:PlayerUnloaded')
