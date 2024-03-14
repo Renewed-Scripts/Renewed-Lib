@@ -44,6 +44,7 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
         name = ('%s %s'):format(PlayerData.charinfo.firstname, PlayerData.charinfo.lastname)
     }
 
+    LocalPlayer.state:set('renewed_service', PlayerData.job.onduty and PlayerData.job.name or false, true)
     TriggerEvent('Renewed-Lib:client:PlayerLoaded', Player)
 end)
 
@@ -52,6 +53,7 @@ RegisterNetEvent('QBCore:Client:SetDuty', function(enabled)
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
+    LocalPlayer.state:set('renewed_service', false, true)
     Player = table.wipe(Player)
     TriggerEvent('Renewed-Lib:client:PlayerUnloaded')
 end)
