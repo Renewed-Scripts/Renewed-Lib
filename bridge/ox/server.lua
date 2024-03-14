@@ -1,8 +1,6 @@
-local file = ('imports/%s.lua'):format(IsDuplicityVersion() and 'server' or 'client')
-local import = LoadResourceFile('ox_core', file)
-local chunk = assert(load(import, ('@@ox_core/%s'):format(file)))
+if not lib.checkDependency('ox_core', '0.21.3', true) then return end
 
-chunk()
+local Ox = require '@ox_core.lib.init'
 
 function Renewed.getCharId(source)
     local player = Ox.GetPlayer(source)
@@ -12,22 +10,24 @@ end
 
 Renewed.getPlayer = Ox.GetPlayer
 
+Renewed.CreateVehicle = Ox.CreateVehicle
+
 function Renewed.getPlayerGroups(source)
     local player = Ox.GetPlayer(source)
 
-    return player and player.getGroups()
+    return player and player.charId and player.getGroups()
 end
 
 function Renewed.getCharName(source)
     local player = Ox.GetPlayer(source)
 
-    return player and ('%s %s'):format(player.firstName, player.lastName)
+    return player and player.charId and player.get('name')
 end
 
 function Renewed.addStress(source, value)
     local player = Ox.GetPlayer(source)
 
-    if player then
+    if player and player.charId then
         player.addStatus('stress', value)
     end
 end
@@ -35,7 +35,7 @@ end
 function Renewed.relieveStress(source, value)
     local player = Ox.GetPlayer(source)
 
-    if player then
+    if player and player.charId then
         player.removeStatus('stress', value)
     end
 end
@@ -43,7 +43,7 @@ end
 function Renewed.getSourceByCharId(charId)
     local player = Ox.GetPlayerByFilter({ charId = tonumber(charId) })
 
-    return player and player.source
+    return player and player.charId and player.source
 end
 
 function Renewed.removeMoney(source, amount, mType, reason)
@@ -73,3 +73,4 @@ AddEventHandler('ox:playerLogout', function(source, _, charid)
         charId = charid,
     })
 end)
+
