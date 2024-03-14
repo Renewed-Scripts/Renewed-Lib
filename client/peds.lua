@@ -120,6 +120,18 @@ function Renewed.setPedCoords(id, coords, heading)
     end
 end
 
+function Renewed.getPedById(id)
+    if not id then return end
+
+    for i = 1, #Peds do
+        local item = Peds[i]
+        if item.id == id then
+            if item.spawned then return item.spawned end
+            break
+        end
+    end
+end
+
 AddEventHandler('onClientResourceStop', function(resource)
     for i = #Peds, 1, -1 do
         local item = Peds[i]
