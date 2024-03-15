@@ -131,6 +131,20 @@ function Renewed.getPedById(id)
     end
 end
 
+function Renewed.removeResourcePed(resource)
+    resource = resource or GetInvokingResource() or cache.resource
+    
+    for i = 1, #Peds do
+        local item = Peds[i]
+        if item.resource == resource then
+            if item.spawned then
+                deletePed(item.spawned, item.target, item.interact)
+            end
+            table.remove(Peds, i)
+        end
+    end
+end
+
 AddEventHandler('onClientResourceStop', function(resource)
     for i = #Peds, 1, -1 do
         local item = Peds[i]
