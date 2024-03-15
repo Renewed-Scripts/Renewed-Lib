@@ -134,7 +134,8 @@ end
 function Renewed.removeResourcePed(resource)
     resource = resource or GetInvokingResource() or cache.resource
     
-    for i = 1, #Peds do
+    for i = #Peds, 1, -1 do
+
         local item = Peds[i]
         if item.resource == resource then
             if item.spawned then
