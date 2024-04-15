@@ -29,6 +29,7 @@ local function spawnPed(payload)
     if payload.animDict and payload.animName then
         lib.requestAnimDict(payload.animDict, 1000)
         TaskPlayAnim(ped, payload.animDict, payload.animName, 8.0, 0, -1, 1, 0, 0, 0)
+        RemoveAnimDict(payload.animDict)
     end
 
     if payload.scenario then
@@ -133,7 +134,7 @@ end
 
 function Renewed.removeResourcePed(resource)
     resource = resource or GetInvokingResource() or cache.resource
-    
+
     for i = #Peds, 1, -1 do
 
         local item = Peds[i]
