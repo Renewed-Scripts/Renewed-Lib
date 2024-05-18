@@ -5,11 +5,11 @@ local playerState = LocalPlayer.state
 
 function RenewedLib.getPlayerGroup()
     return Player and Player.Group or {}
-end
+end exports('GetPlayerGroup', RenewedLib.getPlayerGroup)
 
 function RenewedLib.getCharId()
     return Player and Player.charId
-end
+end exports('GetCharId', RenewedLib.getCharId)
 
 -- Group Updaters --
 RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)

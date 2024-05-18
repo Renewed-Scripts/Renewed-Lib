@@ -2,6 +2,7 @@
 RenewedLib = {}
 
 exports('getLib', function()
+	print("This export is deprecated, please refer to the documentation for the updated usage.")
 	return RenewedLib
 end)
 

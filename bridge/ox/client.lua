@@ -6,11 +6,11 @@ local Player = {}
 
 function RenewedLib.getPlayerGroup()
     return Player and Player.group
-end
+end exports("GetPlayerGroup", RenewedLib.getPlayerGroup())
 
 function RenewedLib.getCharId()
     return Player and Player.charId
-end
+end exports("GetCharId", RenewedLib.getCharId())
 
 RegisterNetEvent('ox:setGroup', function(name, grade)
     Player.group[name] = grade

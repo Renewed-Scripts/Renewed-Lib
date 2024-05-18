@@ -3,7 +3,7 @@ local Players, Jobs = {}, {}
 
 function RenewedLib.getGroups(src)
     return Players[src] and Players[src].Groups or false
-end
+end exports('GetGroups', RenewedLib.getGroups)
 
 function RenewedLib.hasGroup(src, group, grade)
     local Player = Players[src]
@@ -14,44 +14,44 @@ function RenewedLib.hasGroup(src, group, grade)
     if grade then return Player.Groups[group] >= grade end
 
     return true
-end
+end exports('HasGroup', RenewedLib.hasGroup)
 
 function RenewedLib.getPlayer(source)
     return Players[source]
-end
+end exports('GetPlayer', RenewedLib.getPlayer)
 
 function RenewedLib.addStress(source, value)
     value *= 10000
     TriggerClientEvent('esx_status:add', source, 'stress', value)
     TriggerClientEvent('HUD:Notification', source, 'Stress Gained', 'error', 1500)
-end
+end exports('AddStress', RenewedLib.addStress)
 
 function RenewedLib.relieveStress(source, value)
     value *= 10000
     TriggerClientEvent('HUD:Notification', source, 'Stress Relieved')
     TriggerClientEvent('esx_status:remove', source, 'stress', value)
-end
+end exports('RelieveStress', RenewedLib.relieveStress)
 
 function RenewedLib.isGroupAuth(job, grade)
     grade = tostring(grade)
     local numGrade = tonumber(grade)
     return Jobs[job].grades[grade] and Jobs[job].grades[grade].name == 'boss' or Jobs[job].grades[numGrade] and Jobs[job].grades[numGrade].name == 'boss'
-end
+end exports('IsGroupAuth', RenewedLib.isGroupAuth)
 
 function RenewedLib.getCharId(src)
     return Players[src] and Players[src].charId or false
-end
+end exports('GetCharId', RenewedLib.getCharId)
 
 function RenewedLib.getCharName(src)
     return Players[src] and Players[src].name or false
-end
+end exports('GetCharName', RenewedLib.getCharName)
 
 function RenewedLib.getCharNameById(identifier)
     local result = MySQL.prepare.await('SELECT firstname, lastname FROM users WHERE identifier = ?', {identifier})
     if not result then return false end
     local fullname = ("%s %s"):format(result.firstname, result.lastname)
     return fullname
-end
+end exports('GetCharNameById', RenewedLib.getCharNameById)
 
 -- Converting qb money to esx money --
 local convertMoney = {
@@ -64,7 +64,7 @@ function RenewedLib.getMoney(src, mType)
     if not Player then return end
     mType = convertMoney[mType] or mType
     return Player.getAccount(mType).money
-end
+end exports('GetMoney', RenewedLib.getMoney)
 
 function RenewedLib.removeMoney(src, amount, mType, reason)
     if not Players[src] then return false end
@@ -78,7 +78,7 @@ function RenewedLib.removeMoney(src, amount, mType, reason)
 
     Player.removeAccountMoney(type, amount, reason)
     return true
-end
+end exports('RemoveMoney', RenewedLib.removeMoney)
 
 function RenewedLib.addMoney(src, amount, mType, reason)
     if not Players[src] then return end
@@ -92,7 +92,7 @@ function RenewedLib.addMoney(src, amount, mType, reason)
     Player.addAccountMoney(type, amount, reason)
 
     return true
-end
+end exports('AddMoney', RenewedLib.addMoney)
 
 function RenewedLib.addNeeds(src, needs)
     if type(needs) ~= "table" then return end
@@ -110,7 +110,7 @@ function RenewedLib.addNeeds(src, needs)
     end
 
     return true
-end
+end exports('AddNeeds', RenewedLib.addNeeds)
 
 function RenewedLib.getSourceByCharId(charId)
     for k, v in pairs(Players) do
@@ -120,7 +120,7 @@ function RenewedLib.getSourceByCharId(charId)
     end
 
     return false
-end
+end exports('GetSourceByCharId', RenewedLib.getSourceByCharId)
 
 
 -- Group Updaters --

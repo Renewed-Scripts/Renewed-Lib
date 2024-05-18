@@ -3,11 +3,11 @@ local Loaded = false
 
 function RenewedLib.getPlayerGroup()
     return Player and Player.Group or {}
-end
+end exports("GetPlayerGroup", RenewedLib.getPlayerGroup)
 
 function RenewedLib.getCharId()
     return Player and Player.charId
-end
+end exports("GetCharId", RenewedLib.getCharId)
 
 RegisterNetEvent('esx:setPlayerData', function(key, value)
 	if not Loaded or GetInvokingResource() ~= 'es_extended' then return end

@@ -3,7 +3,7 @@ local Players, Jobs, Gangs = {}, {}, {}
 
 function RenewedLib.getGroups(src)
     return Players[src] and Players[src].Groups or false
-end
+end exports('getGroups', RenewedLib.getGroups)
 
 function RenewedLib.hasGroup(src, group, grade)
     local Player = Players[src]
@@ -14,11 +14,11 @@ function RenewedLib.hasGroup(src, group, grade)
     if grade then return Player.Groups[group] >= grade end
 
     return true
-end
+end exports('hasGroup', RenewedLib.hasGroup)
 
 function RenewedLib.getPlayer(source)
     return Players[source]
-end
+end exports('getPlayer', RenewedLib.getPlayer)
 
 function RenewedLib.addStress(source, value)
     local Player = QBCore.Functions.GetPlayer(source)
@@ -27,7 +27,7 @@ function RenewedLib.addStress(source, value)
     Player.Functions.SetMetaData('stress', stress > 100 and 100 or stress)
     TriggerClientEvent('hud:client:UpdateStress', source, stress)
     TriggerClientEvent('QBCore:Notify', source, "Stress Gained", 'error', 1500)
-end
+end exports('addStress', RenewedLib.addStress)
 
 function RenewedLib.relieveStress(source, value)
     local Player = QBCore.Functions.GetPlayer(source)
@@ -36,7 +36,7 @@ function RenewedLib.relieveStress(source, value)
     Player.Functions.SetMetaData('stress', stress < 0 and 0 or stress)
     TriggerClientEvent('hud:client:UpdateStress', source, stress)
     TriggerClientEvent('QBCore:Notify', source, "Stress Relieved", 'error', 1500)
-end
+end exports('relieveStress', RenewedLib.relieveStress)
 
 
 function RenewedLib.isGroupAuth(group, grade)
@@ -48,15 +48,15 @@ function RenewedLib.isGroupAuth(group, grade)
         auth = Group.grades[grade] and Group.grades[grade].isboss or Group.grades[numGrade] and Group.grades[numGrade].isboss
     end
     return auth
-end
+end exports('isGroupAuth', RenewedLib.isGroupAuth)
 
 function RenewedLib.getCharId(src)
     return Players[src] and Players[src].charId or false
-end
+end exports('getCharId', RenewedLib.getCharId)
 
 function RenewedLib.getCharName(src)
     return Players[src] and Players[src].name or false
-end
+end exports('getCharName', RenewedLib.getCharName)
 
 local query = 'SELECT charinfo FROM players WHERE citizenid = ?'
 function RenewedLib.getCharNameById(identifier)
@@ -65,13 +65,13 @@ function RenewedLib.getCharNameById(identifier)
     charinfo = json.decode(charinfo)
     local fullname = ("%s %s"):format(charinfo.firstname, charinfo.lastname)
     return fullname
-end
+end exports('getCharNameById', RenewedLib.getCharNameById)
 
 function RenewedLib.getMoney(src, mType)
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
     return Player.PlayerData.money[mType]
-end
+end exports('getMoney', RenewedLib.getMoney)
 
 function RenewedLib.removeMoney(src, amount, mType, reason)
     local Player = QBCore.Functions.GetPlayer(src)
@@ -81,7 +81,7 @@ function RenewedLib.removeMoney(src, amount, mType, reason)
     if Player.PlayerData.money[mType] < amount then return end
 
     return Player.Functions.RemoveMoney(mType, amount, reason or "unknown")
-end
+end exports('removeMoney', RenewedLib.removeMoney)
 
 function RenewedLib.addMoney(src, amount, mType, reason)
     local Player = QBCore.Functions.GetPlayer(src)
@@ -89,7 +89,7 @@ function RenewedLib.addMoney(src, amount, mType, reason)
     if not Player then return end
 
     return Player.Functions.AddMoney(mType, amount, reason or "unknown")
-end
+end exports('addMoney', RenewedLib.addMoney)
 
 function RenewedLib.addNeeds(src, needs)
     if type(needs) ~= "table" then return end
@@ -113,7 +113,7 @@ function RenewedLib.addNeeds(src, needs)
     TriggerClientEvent('hud:client:UpdateNeeds', src, hunger, thirst)
 
     return true
-end
+end exports('addNeeds', RenewedLib.addNeeds)
 
 function RenewedLib.getSourceByCharId(charId)
     for k, v in pairs(Players) do
@@ -123,7 +123,7 @@ function RenewedLib.getSourceByCharId(charId)
     end
 
     return false
-end
+end exports('getSourceByCharId', RenewedLib.getSourceByCharId)
 
 -- Group Updaters --
 AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
