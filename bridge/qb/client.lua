@@ -3,6 +3,12 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local Player = {}
 local playerState = LocalPlayer.state
 
+local CopCount = 0
+
+exports('GetCopCount', function()
+    return CopCount
+end)
+
 function RenewedLib.getPlayerGroup()
     return Player and Player.Group or {}
 end exports('GetPlayerGroup', RenewedLib.getPlayerGroup)
@@ -62,4 +68,10 @@ RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
     playerState:set('renewed_service', false, true)
     Player = table.wipe(Player)
     TriggerEvent('Renewed-Lib:client:PlayerUnloaded')
+end)
+
+RegisterNetEvent('police:SetCopCount', function(amount)
+    if CopCount and type(CopCount) == 'number' then
+        CopCount = amount
+    end
 end)
