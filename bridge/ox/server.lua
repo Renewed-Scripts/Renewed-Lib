@@ -2,29 +2,29 @@ if not lib.checkDependency('ox_core', '0.21.3', true) then return end
 
 local Ox = require '@ox_core.lib.init'
 
-function Renewed.getCharId(source)
+function RenewedLib.getCharId(source)
     local player = Ox.GetPlayer(source)
 
     return player and player.charId
 end
 
-Renewed.getPlayer = Ox.GetPlayer
+RenewedLib.getPlayer = Ox.GetPlayer
 
-Renewed.CreateVehicle = Ox.CreateVehicle
+RenewedLib.CreateVehicle = Ox.CreateVehicle
 
-function Renewed.getPlayerGroups(source)
+function RenewedLib.getPlayerGroups(source)
     local player = Ox.GetPlayer(source)
 
     return player and player.charId and player.getGroups()
 end
 
-function Renewed.getCharName(source)
+function RenewedLib.getCharName(source)
     local player = Ox.GetPlayer(source)
 
     return player and player.charId and player.get('name')
 end
 
-function Renewed.addStress(source, value)
+function RenewedLib.addStress(source, value)
     local player = Ox.GetPlayer(source)
 
     if player and player.charId then
@@ -32,7 +32,7 @@ function Renewed.addStress(source, value)
     end
 end
 
-function Renewed.relieveStress(source, value)
+function RenewedLib.relieveStress(source, value)
     local player = Ox.GetPlayer(source)
 
     if player and player.charId then
@@ -40,13 +40,13 @@ function Renewed.relieveStress(source, value)
     end
 end
 
-function Renewed.getSourceByCharId(charId)
+function RenewedLib.getSourceByCharId(charId)
     local player = Ox.GetPlayerByFilter({ charId = tonumber(charId) })
 
     return player and player.charId and player.source
 end
 
-function Renewed.removeMoney(source, amount, mType, reason)
+function RenewedLib.removeMoney(source, amount, mType, reason)
     if mType == 'bank' then
 
     else -- cash
@@ -54,7 +54,7 @@ function Renewed.removeMoney(source, amount, mType, reason)
     end
 end
 
-function Renewed.addMoney(source, amount, mType, reason)
+function RenewedLib.addMoney(source, amount, mType, reason)
     if mType == 'bank' then
 
     else -- cash

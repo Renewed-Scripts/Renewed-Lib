@@ -4,11 +4,11 @@ local Ox = require '@ox_core.lib.init'
 
 local Player = {}
 
-function Renewed.getPlayerGroup()
+function RenewedLib.getPlayerGroup()
     return Player and Player.group
 end
 
-function Renewed.getCharId()
+function RenewedLib.getCharId()
     return Player and Player.charId
 end
 

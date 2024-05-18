@@ -27,9 +27,7 @@ local function spawnPed(payload)
     end
 
     if payload.animDict and payload.animName then
-        lib.requestAnimDict(payload.animDict, 1000)
-        TaskPlayAnim(ped, payload.animDict, payload.animName, 8.0, 0, -1, 1, 0, 0, 0)
-        RemoveAnimDict(payload.animDict)
+        lib.playAnim(ped, payload.animDict, payload.animName, 8.0, 0, -1, 1, 0, 0, 0)
     end
 
     if payload.scenario then
@@ -48,7 +46,7 @@ local function spawnPed(payload)
     return ped
 end
 
-function Renewed.addPed(payload)
+function RenewedLib.addPed(payload)
     payload = table.type(payload) == 'array' and payload or { payload }
 
     local pedSize = #Peds
@@ -88,7 +86,7 @@ local function deletePed(entity, target, interact)
     DeleteEntity(entity)
 end
 
-function Renewed.removePed(id)
+function RenewedLib.removePed(id)
     if not id then return end
 
     for i = 1, #Peds do
@@ -103,7 +101,7 @@ function Renewed.removePed(id)
     end
 end
 
-function Renewed.setPedCoords(id, coords, heading)
+function RenewedLib.setPedCoords(id, coords, heading)
     if not id then return end
 
     for i = 1, #Peds do

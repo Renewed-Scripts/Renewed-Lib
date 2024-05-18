@@ -51,7 +51,7 @@ local function SpawnObject(payload)
   return obj
 end
 
-function Renewed.addObject(payload)
+function RenewedLib.addObject(payload)
   payload = table.type(payload) == 'array' and payload or { payload }
   local objectSize = #Objects
   local resource = GetInvokingResource()
@@ -95,7 +95,7 @@ local function forceDeleteEntity(item)
   item.spawned = false
 end
 
-function Renewed.changeObject(id, newObject, newCoords, newHeading)
+function RenewedLib.changeObject(id, newObject, newCoords, newHeading)
   local objId = getObject(id)
 
   if not objId then return end
@@ -112,7 +112,7 @@ function Renewed.changeObject(id, newObject, newCoords, newHeading)
   end
 end
 
-function Renewed.changeAnim(id, anim, animSpeed)
+function RenewedLib.changeAnim(id, anim, animSpeed)
   local objId = getObject(id)
 
   if not objId then return end
@@ -127,7 +127,7 @@ function Renewed.changeAnim(id, anim, animSpeed)
   SetEntityAnimSpeed(item.spawned, anim[1], anim[2], animSpeed)
 end
 
-function Renewed.removeObject(id)
+function RenewedLib.removeObject(id)
   local objId = id and getObject(id)
 
   if not objId then return end
@@ -167,7 +167,7 @@ CreateThread(function()
     end
 end)
 
-function Renewed.removeResourceObj(resource)
+function RenewedLib.removeResourceObj(resource)
   resource = resource or GetInvokingResource() or cache.resource
   for i = #Objects, 1, -1 do
     local item = Objects[i]
@@ -183,7 +183,7 @@ function Renewed.removeResourceObj(resource)
 end
 
 AddEventHandler('onClientResourceStop', function(resource)
-  Renewed.removeResourceObj(resource)
+  RenewedLib.removeResourceObj(resource)
 end)
 
 
@@ -207,7 +207,7 @@ end
 
 local IsControlJustReleased = IsControlJustReleased
 local SetEntityCoords = SetEntityCoords
-function Renewed.placeObject(object, dist, snapGround, text, allowedMats, offset)
+function RenewedLib.placeObject(object, dist, snapGround, text, allowedMats, offset)
   if placingObj then return end
   if not object then return "You didnt define any object to place" end
 
@@ -221,7 +221,7 @@ function Renewed.placeObject(object, dist, snapGround, text, allowedMats, offset
 
   placingObj = CreateObject(obj, 1.0, 1.0, 1.0, false, true, true)
   SetModelAsNoLongerNeeded(obj)
-  SetEntityAlpha(placingObj, 150)
+  SetEntityAlpha(placingObj, 150, false)
   SetEntityCollision(placingObj, false, false)
   SetEntityInvincible(placingObj, true)
   FreezeEntityPosition(placingObj, true)
@@ -240,12 +240,12 @@ function Renewed.placeObject(object, dist, snapGround, text, allowedMats, offset
     if hit then
 
       if offset then
-        coords = coords + offset
+        coords += offset
       end
 
-      SetEntityCoords(placingObj, coords.x, coords.y, coords.z)
-      local objCoords = GetEntityCoords(placingObj)
-      local distCheck = #(GetEntityCoords(cache.ped) - objCoords)
+      SetEntityCoords(placingObj, coords.x, coords.y, coords.z, false, false, false, false)
+      local objCoords = GetEntityCoords(placingObj, false)
+      local distCheck = #(GetEntityCoords(cache.ped, false) - objCoords)
       SetEntityHeading(placingObj, heading)
 
       if snapGround then
@@ -268,7 +268,7 @@ function Renewed.placeObject(object, dist, snapGround, text, allowedMats, offset
         if not outLine and (not allowedMats or allowedMats[materialHash]) and distCheck < checkDist then
           finishPlacing()
 
-          return objCoords, heading
+          return coords, heading
         end
       end
 
@@ -279,19 +279,19 @@ function Renewed.placeObject(object, dist, snapGround, text, allowedMats, offset
       end
 
       if IsControlJustReleased(0, 14) then
-        heading = heading + 5
+        heading += 5
         if heading > 360 then heading = 0.0 end
       end
 
       if IsControlJustReleased(0, 15) then
-        heading = heading - 5
+        heading -= 5
         if heading < 0 then heading = 360.0 end
       end
     end
   end
 end
 
-function Renewed.stopPlacing()
+function RenewedLib.stopPlacing()
   if not placingObj then return end
   finishPlacing()
 end

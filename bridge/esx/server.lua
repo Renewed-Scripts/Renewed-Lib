@@ -1,11 +1,11 @@
 local ESX = exports.es_extended:getSharedObject()
 local Players, Jobs = {}, {}
 
-function Renewed.getGroups(src)
+function RenewedLib.getGroups(src)
     return Players[src] and Players[src].Groups or false
 end
 
-function Renewed.hasGroup(src, group, grade)
+function RenewedLib.hasGroup(src, group, grade)
     local Player = Players[src]
 
     if not Player then return false end
@@ -16,39 +16,38 @@ function Renewed.hasGroup(src, group, grade)
     return true
 end
 
-function Renewed.getPlayer(source)
+function RenewedLib.getPlayer(source)
     return Players[source]
 end
 
-function Renewed.addStress(source, value)
+function RenewedLib.addStress(source, value)
     value *= 10000
     TriggerClientEvent('esx_status:add', source, 'stress', value)
     TriggerClientEvent('HUD:Notification', source, 'Stress Gained', 'error', 1500)
 end
 
-function Renewed.relieveStress(source, value)
+function RenewedLib.relieveStress(source, value)
     value *= 10000
     TriggerClientEvent('HUD:Notification', source, 'Stress Relieved')
     TriggerClientEvent('esx_status:remove', source, 'stress', value)
 end
 
-function Renewed.isGroupAuth(job, grade)
+function RenewedLib.isGroupAuth(job, grade)
     grade = tostring(grade)
     local numGrade = tonumber(grade)
     return Jobs[job].grades[grade] and Jobs[job].grades[grade].name == 'boss' or Jobs[job].grades[numGrade] and Jobs[job].grades[numGrade].name == 'boss'
 end
 
-function Renewed.getCharId(src)
+function RenewedLib.getCharId(src)
     return Players[src] and Players[src].charId or false
 end
 
-function Renewed.getCharName(src)
+function RenewedLib.getCharName(src)
     return Players[src] and Players[src].name or false
 end
 
-local GET_CHARINFO = 'SELECT firstname, lastname FROM users WHERE identifier = ?'
-function Renewed.getCharNameById(identifier)
-    local result = MySQL.prepare.await(GET_CHARINFO, {identifier})
+function RenewedLib.getCharNameById(identifier)
+    local result = MySQL.prepare.await('SELECT firstname, lastname FROM users WHERE identifier = ?', {identifier})
     if not result then return false end
     local fullname = ("%s %s"):format(result.firstname, result.lastname)
     return fullname
@@ -60,21 +59,14 @@ local convertMoney = {
     ["bank"] = "bank"
 }
 
-function Renewed.getMoney(src, mType)
+function RenewedLib.getMoney(src, mType)
     local Player = ESX.GetPlayerFromId(src)
     if not Player then return end
     mType = convertMoney[mType] or mType
     return Player.getAccount(mType).money
 end
 
-local GET_OFFLINEMONEY = 'SELECT accounts FROM users WHERE identifier = ?'
-function Renewed.getOfflineMoney(id)
-    local result = MySQL.query.await(GET_OFFLINEMONEY, {id})
-    if not result then return false end
-    return {bank = result.bank, cash = result.money}
-end
-
-function Renewed.removeMoney(src, amount, mType, reason)
+function RenewedLib.removeMoney(src, amount, mType, reason)
     if not Players[src] then return false end
 
     local type = convertMoney[mType] or mType
@@ -88,7 +80,7 @@ function Renewed.removeMoney(src, amount, mType, reason)
     return true
 end
 
-function Renewed.addMoney(src, amount, mType, reason)
+function RenewedLib.addMoney(src, amount, mType, reason)
     if not Players[src] then return end
 
     local type = convertMoney[mType]
@@ -102,19 +94,7 @@ function Renewed.addMoney(src, amount, mType, reason)
     return true
 end
 
-local ADD_OFFLINEMONEY = "UPDATE users SET accounts = JSON_SET(accounts, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(accounts, CONCAT('$.', ?))) + ?) WHERE identifier = ?"
-function Renewed.addOfflineMoney(identifier, amount, mType)
-    local type = convertMoney[mType] or mType
-    return MySQL.prepare.await(ADD_OFFLINEMONEY, {mType, mType, amount, identifier})
-end
-
-local REMOVE_OFFLINEMONEY = "UPDATE users SET accounts = JSON_SET(accounts, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(accounts, CONCAT('$.', ?))) - ?) WHERE identifier = ?"
-function Renewed.removeOfflineMoney(identifier, amount, mType)
-    local type = convertMoney[mType] or mType
-    return MySQL.prepare.await(REMOVE_OFFLINEMONEY, {mType, mType, amount, identifier})
-end
-
-function Renewed.addNeeds(src, needs)
+function RenewedLib.addNeeds(src, needs)
     if type(needs) ~= "table" then return end
     if not Players[src] then return end
 
@@ -132,7 +112,7 @@ function Renewed.addNeeds(src, needs)
     return true
 end
 
-function Renewed.getSourceByCharId(charId)
+function RenewedLib.getSourceByCharId(charId)
     for k, v in pairs(Players) do
         if v.charId == charId then
             return k
@@ -183,13 +163,6 @@ CreateThread(function()
 end)
 
 AddEventHandler('esx:playerDropped', function(source)
-    if Players[source] then
-        TriggerEvent('Renewed-Lib:server:playerRemoved', source, Players[source])
-        Players[source] = nil
-    end
-end)
-
-AddEventHandler('playerDropped', function()
     if Players[source] then
         TriggerEvent('Renewed-Lib:server:playerRemoved', source, Players[source])
         Players[source] = nil

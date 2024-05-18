@@ -1,11 +1,11 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 local Players, Jobs, Gangs = {}, {}, {}
 
-function Renewed.getGroups(src)
+function RenewedLib.getGroups(src)
     return Players[src] and Players[src].Groups or false
 end
 
-function Renewed.hasGroup(src, group, grade)
+function RenewedLib.hasGroup(src, group, grade)
     local Player = Players[src]
 
     if not Player then return false end
@@ -16,11 +16,11 @@ function Renewed.hasGroup(src, group, grade)
     return true
 end
 
-function Renewed.getPlayer(source)
+function RenewedLib.getPlayer(source)
     return Players[source]
 end
 
-function Renewed.addStress(source, value)
+function RenewedLib.addStress(source, value)
     local Player = QBCore.Functions.GetPlayer(source)
     local stress = (Player.PlayerData.metadata.stress or 0) + value
 
@@ -29,7 +29,7 @@ function Renewed.addStress(source, value)
     TriggerClientEvent('QBCore:Notify', source, "Stress Gained", 'error', 1500)
 end
 
-function Renewed.relieveStress(source, value)
+function RenewedLib.relieveStress(source, value)
     local Player = QBCore.Functions.GetPlayer(source)
     local stress = (Player.PlayerData.metadata.stress or 0) - value
 
@@ -39,7 +39,7 @@ function Renewed.relieveStress(source, value)
 end
 
 
-function Renewed.isGroupAuth(group, grade)
+function RenewedLib.isGroupAuth(group, grade)
     grade = tostring(grade)
     local numGrade = tonumber(grade)
     local Group = Jobs[group] or Gangs[group]
@@ -50,16 +50,16 @@ function Renewed.isGroupAuth(group, grade)
     return auth
 end
 
-function Renewed.getCharId(src)
+function RenewedLib.getCharId(src)
     return Players[src] and Players[src].charId or false
 end
 
-function Renewed.getCharName(src)
+function RenewedLib.getCharName(src)
     return Players[src] and Players[src].name or false
 end
 
 local query = 'SELECT charinfo FROM players WHERE citizenid = ?'
-function Renewed.getCharNameById(identifier)
+function RenewedLib.getCharNameById(identifier)
     local charinfo = MySQL.prepare.await(query, {identifier})
     if not charinfo then return false end
     charinfo = json.decode(charinfo)
@@ -67,19 +67,13 @@ function Renewed.getCharNameById(identifier)
     return fullname
 end
 
-function Renewed.getMoney(src, mType)
+function RenewedLib.getMoney(src, mType)
     local Player = QBCore.Functions.GetPlayer(src)
     if not Player then return end
     return Player.PlayerData.money[mType]
 end
-local GET_OFFLINEMONEY = 'SELECT money FROM players WHERE citizenid = ?'
-function Renewed.getOfflineMoney(id)
-    local result = MySQL.query.await(GET_OFFLINEMONEY, {id})
-    if not result then return false end
-    return {bank = result.bank, cash = result.cash}
-end
 
-function Renewed.removeMoney(src, amount, mType, reason)
+function RenewedLib.removeMoney(src, amount, mType, reason)
     local Player = QBCore.Functions.GetPlayer(src)
 
     if not Player then return end
@@ -89,7 +83,7 @@ function Renewed.removeMoney(src, amount, mType, reason)
     return Player.Functions.RemoveMoney(mType, amount, reason or "unknown")
 end
 
-function Renewed.addMoney(src, amount, mType, reason)
+function RenewedLib.addMoney(src, amount, mType, reason)
     local Player = QBCore.Functions.GetPlayer(src)
 
     if not Player then return end
@@ -97,17 +91,7 @@ function Renewed.addMoney(src, amount, mType, reason)
     return Player.Functions.AddMoney(mType, amount, reason or "unknown")
 end
 
-local ADD_OFFLINEMONEY = "UPDATE players SET money = JSON_SET(money, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(money, CONCAT('$.', ?))) + ?) WHERE citizenid = ?"
-function Renewed.addOfflineMoney(identifier, amount, mType)
-    return MySQL.prepare.await(ADD_OFFLINEMONEY, {mType, mType, amount, identifier})
-end
-
-local REMOVE_OFFLINEMONEY = "UPDATE players SET money = JSON_SET(money, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(money, CONCAT('$.', ?))) - ?) WHERE citizenid = ?"
-function Renewed.removeOfflineMoney(identifier, amount, mType)
-    return MySQL.prepare.await(REMOVE_OFFLINEMONEY, {mType, mType, amount, identifier})
-end
-
-function Renewed.addNeeds(src, needs)
+function RenewedLib.addNeeds(src, needs)
     if type(needs) ~= "table" then return end
 
     local Player = QBCore.Functions.GetPlayer(src)
@@ -131,7 +115,7 @@ function Renewed.addNeeds(src, needs)
     return true
 end
 
-function Renewed.getSourceByCharId(charId)
+function RenewedLib.getSourceByCharId(charId)
     for k, v in pairs(Players) do
         if v.charId == charId then
             return k

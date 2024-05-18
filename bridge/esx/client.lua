@@ -1,11 +1,11 @@
 local Player = {}
 local Loaded = false
 
-function Renewed.getPlayerGroup()
+function RenewedLib.getPlayerGroup()
     return Player and Player.Group or {}
 end
 
-function Renewed.getCharId()
+function RenewedLib.getCharId()
     return Player and Player.charId
 end
 
