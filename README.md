@@ -1,4 +1,4 @@
-<div align='center'><h1><a href='https://renewed-scripts.gitbook.io/renewed-scripts/free-scripts/renewed-lib'>Documentation</a></h3></div>
+<div align='center'><h1><a href='https://renewed.dev/lib'>Documentation</a></h3></div>
 <br>
 
 ## Renewed Library
