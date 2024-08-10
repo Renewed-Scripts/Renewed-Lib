@@ -1,3 +1,5 @@
+if not lib.checkDependency('ND_Core', '2.0.0') then return end
+
 NDCore = {}
 
 lib.load('@ND_Core.init')
