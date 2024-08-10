@@ -10,7 +10,8 @@ end)
 local qb = GetResourceState('qb-core')
 local esx = GetResourceState('es_extended')
 local ox = GetResourceState('ox_core')
-local framework = ox == 'started' and 'ox' or qb == 'started' and 'qb' or esx == 'started' and 'esx' or nil
+local nd = GetResourceState('ND_Core')
+local framework = ox == 'started' and 'ox' or qb == 'started' and 'qb' or esx == 'started' and 'esx' or nd == 'started' and 'nd' or nil
 
 if not framework then
 	return error('No framework detected')
