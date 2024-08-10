@@ -119,7 +119,7 @@ function RenewedLib.setPedCoords(id, coords, heading)
     end
 end
 
-function Renewed.getPedById(id)
+function RenewedLib.getPedById(id)
     if not id then return end
 
     for i = 1, #Peds do
@@ -130,7 +130,7 @@ function Renewed.getPedById(id)
     end
 end
 
-function Renewed.removeResourcePed(resource)
+function RenewedLib.removeResourcePed(resource)
     resource = resource or GetInvokingResource() or cache.resource
 
     for i = #Peds, 1, -1 do
