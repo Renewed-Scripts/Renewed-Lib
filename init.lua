@@ -1,4 +1,4 @@
-local Renewed = {}
+Renewed = {}
 
 setmetatable(Renewed, {
     __call = function(self, ...)

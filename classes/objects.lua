@@ -52,5 +52,10 @@ function object_class:constructor(objectData)
 end
 
 
+---Sets the object to either a spawned entity or nil, depending on if we are spawning or despawning the object.
+---@param object any
+function object_class:setObject(object)
+    self.object = object
+end
 
 return object_class

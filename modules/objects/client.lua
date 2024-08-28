@@ -86,7 +86,7 @@ local function createObject(object)
 
     SetModelAsNoLongerNeeded(object.object)
 
-    object.object = obj
+    object:setObject(obj)
 end
 
 
@@ -95,7 +95,7 @@ end
 local function deleteObject(object)
     if object.object and DoesEntityExist(object.object) then
         DeleteEntity(object.object)
-        object.object = nil
+        object:setObject(nil)
     end
 end exports('deleteObject', deleteObject)
 
