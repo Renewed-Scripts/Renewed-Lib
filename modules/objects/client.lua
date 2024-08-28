@@ -93,12 +93,7 @@ end
 ---Deletes the spawned object if its spawned
 ---@param self renewed_objects
 local function deleteObject(self)
-    print('deleteObject')
-
-    print(self.object, DoesEntityExist(self.object))
     if self.object and DoesEntityExist(self.object) then
-
-        print(' WE ARE HERE ')
         SetEntityAsMissionEntity(self.object, false, true)
         DeleteEntity(self.object)
         if self.target then
