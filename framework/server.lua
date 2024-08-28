@@ -19,7 +19,7 @@ end exports('getSourceByCharId', Controller.getSourceByCharId)
 function Controller.getCharName(source)
     local Player = Players[source]
 
-    return Player and Player.name
+    return Player and Player:getName()
 end exports('getCharName', Controller.getCharName)
 
 ---Gets a player object by their source
@@ -28,7 +28,7 @@ end exports('getCharName', Controller.getCharName)
 function Controller.getCharId(source)
     local Player = Players[source]
 
-    return Player and Player.charId
+    return Player and Player:getCharId()
 end exports('getCharId', Controller.getCharId)
 
 ---Finds a player by their charId
@@ -51,20 +51,16 @@ end exports('getSourceByCharId', Controller.getSourceByCharId)
 function Controller.hasGroup(source, group, grade)
     local Player = Players[source]
 
-    if not Player or not Player.Groups then return false end
-
-    if grade then
-        return Player.Groups[group] >= grade
-    end
-
-    return true
+    return Player and Player:hasGroup(group, grade)
 end exports('hasGroup', Controller.hasGroup)
 
 ---Gets a player's groups
 ---@param source number
----@return table<string, number> | false
+---@return table<string, number>?
 function Controller.getGroups(source)
-    return Players[source] and Players[source].Groups or false
+    local Player = Players[source]
+
+    return Player and Player:getPlayerGroups()
 end exports('getGroups', Controller.getGroups)
 
 
