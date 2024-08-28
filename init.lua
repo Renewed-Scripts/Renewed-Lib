@@ -1,7 +1,9 @@
-Renewed = {}
+Renewed = setmetatable({}, {
+    __index = function(self, index)
+        self[index] = function(...)
+            return exports['Renewed-Lib'][index](nil, ...)
+        end
 
-setmetatable(Renewed, {
-    __call = function(self, ...)
-        return exports['Renewed-Lib']:self(...)
+        return self[index]
     end
 })
