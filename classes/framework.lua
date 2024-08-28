@@ -13,8 +13,9 @@ function framework_class:constructor(data)
     self.Groups = data.Groups
     self.job = data.job
     self.gang = data.gang
+    self.source = data.source
 
-    TriggerEvent('Renewed-Lib:server:playerLoaded', Player.PlayerData.source, data)
+    TriggerEvent('Renewed-Lib:server:playerLoaded', self.source, data)
 end
 
 

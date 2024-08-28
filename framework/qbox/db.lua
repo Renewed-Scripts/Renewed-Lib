@@ -25,7 +25,7 @@ exports('getOfflineMoney', function(charId)
     end
 end)
 
-local ADD_OFFLINEMONEY = 'UPDATE players SET money = JSON_SET(money, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(money, CONCAT('$.', ?))) + ?) WHERE citizenid = ?'
+local ADD_OFFLINEMONEY = "UPDATE players SET money = JSON_SET(money, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(money, CONCAT('$.', ?))) + ?) WHERE citizenid = ?"
 ---Adds money to a player's account by their charId
 ---@param charId string
 ---@param amount number
@@ -35,7 +35,7 @@ exports('addOfflineMoney', function(charId, amount, moneyType)
     return MySQL.prepare.await(ADD_OFFLINEMONEY, {moneyType, moneyType, amount, charId})
 end)
 
-local REMOVE_OFFLINEMONEY = 'UPDATE players SET money = JSON_SET(money, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(money, CONCAT('$.', ?))) - ?) WHERE citizenid = ?'
+local REMOVE_OFFLINEMONEY = "UPDATE players SET money = JSON_SET(money, CONCAT('$.', ?), JSON_UNQUOTE(JSON_EXTRACT(money, CONCAT('$.', ?))) - ?) WHERE citizenid = ?"
 ---Adds money to a player's account by their charId
 ---@param charId string
 ---@param amount number

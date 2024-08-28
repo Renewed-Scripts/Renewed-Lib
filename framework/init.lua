@@ -16,5 +16,7 @@ for i = 1, #frameworks do
         local path = ('framework.%s.%s'):format(framework[2], filePath)
 
         require(path)
+
+        break
     end
 end

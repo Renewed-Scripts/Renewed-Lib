@@ -116,7 +116,8 @@ AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
         groups[groupName] = grade
     end
 
-    Controller.createPlayer(Player.PlayerData.source, {
+    Controller.createPlayer({
+        source = Player.PlayerData.source,
         name = Player.PlayerData.charinfo.firstname .. ' ' .. Player.PlayerData.charinfo.lastname,
         charId = Player.PlayerData.citizenid,
         Groups = groups,

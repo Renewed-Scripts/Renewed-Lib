@@ -70,11 +70,10 @@ end exports('getGroups', Controller.getGroups)
 
 
 ---Creates a player object and assigns it to the class
----@param player framework_class
----@param source number
-function Controller.createPlayer(player, source)
+---@param data framework_class
+function Controller.createPlayer(data)
 ---@diagnostic disable-next-line: invisible
-    Players[source] = framework:new(player)
+    Players[data.source] = framework:new(data)
 end exports('createPlayer', Controller.createPlayer)
 
 
