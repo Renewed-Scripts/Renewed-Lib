@@ -1,10 +1,10 @@
 local object_class = require 'classes.objects'
 
----@type boolean
-local useInteract = GetConvar('renewed_useinteract', 'false') == 'true'
-
 ---@type table <number, CPoint>
 local objects = {}
+
+local useInteract = GetConvar('renewed_useinteract', 'false') == 'true'
+local playerInstance = LocalPlayer.state.instance or 0
 
 ---goes through the array and find the index and returns that with the object
 ---@param id string
@@ -26,7 +26,7 @@ end exports('getObject', getObject)
 ---@param id string
 ---@param anim table <string, string>
 ---@param animSpeed number
-local function changeAnim(id, anim, animSpeed)
+exports('changeAnim', function(id, anim, animSpeed)
     local _, object = getObject(id)
 
     if object then
@@ -37,11 +37,11 @@ local function changeAnim(id, anim, animSpeed)
             SetEntityAnimSpeed(object.object, anim[1], anim[2], animSpeed)
         end
     end
-end exports('changeAnim', changeAnim)
+end)
 
 ---Removes a object from the world and the list
 ---@param id string
-local function removeObject(id)
+exports('removeObject', function(id)
     local index, object = getObject(id)
 
     if index and object then
@@ -51,57 +51,73 @@ local function removeObject(id)
 
         table.remove(objects, index)
     end
-end exports('removeObject', removeObject)
+end)
 
 ---Creates an object and assigns it to the class
----@param object renewed_objects
-local function createObject(object)
-    lib.requestModel(object.object)
+---@param self renewed_objects
+local function createObject(self)
+    if playerInstance ~= self.instance then return end
+    lib.requestModel(self.model)
 
-    local obj = CreateObject(object.object, object.coords.x, object.coords.y, object.coords.z, false, true, true)
-    SetEntityHeading(obj, object.heading)
+    local obj = CreateObject(self.model, self.coords.x, self.coords.y, self.coords.z, false, true, true)
+    SetEntityHeading(obj, self.heading)
 
-
-    if object.snapGround then
+    if self.snapGround then
       PlaceObjectOnGroundProperly(obj)
     end
 
-    FreezeEntityPosition(obj, object.freeze)
-    SetCanClimbOnEntity(obj, object.canClimb)
-    SetEntityCollision(obj, object.colissions, object.colissions)
+    FreezeEntityPosition(obj, self.freeze)
+    SetCanClimbOnEntity(obj, self.canClimb)
+    SetEntityCollision(obj, self.colissions, self.colissions)
 
-    if object.hasAnim then
+    if self.hasAnim then
       SetEntityMaxSpeed(obj, 100)
-      SetEntityAnimSpeed(obj, object.anim[1], object.anim[2], object.animSpeed)
+      SetEntityAnimSpeed(obj, self.anim[1], self.anim[2], self.animSpeed)
     end
 
-    if object.target then
-      exports.ox_target:addLocalEntity(obj, object.target)
+    SetModelAsNoLongerNeeded(self.model)
+
+    if self.target then
+        exports.ox_target:addLocalEntity(obj, self.target)
     end
 
-    if useInteract and object.interact then
-      object.interact.entity = obj
-      exports.interact:AddLocalEntityInteraction(object.interact)
+    if useInteract and self.interact then
+        object.interact.entity = obj
+        exports.interact:AddLocalEntityInteraction(self.interact)
     end
 
-    SetModelAsNoLongerNeeded(object.object)
-
-    object:setObject(obj)
+    self.object = obj
 end
 
 
 ---Deletes the spawned object if its spawned
----@param object renewed_objects
-local function deleteObject(object)
-    if object.object and DoesEntityExist(object.object) then
-        DeleteEntity(object.object)
-        object:setObject(nil)
+---@param self renewed_objects
+local function deleteObject(self)
+    print('deleteObject')
+
+    print(self.object, DoesEntityExist(self.object))
+    if self.object and DoesEntityExist(self.object) then
+
+        print(' WE ARE HERE ')
+        SetEntityAsMissionEntity(self.object, false, true)
+        DeleteEntity(self.object)
+        if self.target then
+            for i = 1, #self.target do
+                exports.ox_target:removeLocalEntity(self.spawned, self.target[i]?.name)
+            end
+        end
+
+        if useInteract and self.interact then
+            exports.interact:RemoveLocalEntityInteraction(self.spawned, self.interact?.id)
+        end
+
+        self.object = nil
     end
 end exports('deleteObject', deleteObject)
 
 ---adds a object to the object list
 ---@param payload renewed_objects
-local function addObject(payload)
+exports('addObject', function(payload)
     -- If table is not an array we convert it into one
     payload = table.type(payload) == 'array' and payload or {payload}
 
@@ -115,7 +131,7 @@ local function addObject(payload)
 
         objects[#objects+1] = lib.points.new(object)
     end
-end exports('addObject', addObject)
+end)
 
 
 ---Deletes an object and removes it from the list if the object comes from the same resource
@@ -131,3 +147,24 @@ AddEventHandler('onClientResourceStop', function(resourceName)
         end
     end
 end)
+
+AddStateBagChangeHandler('instance', ('player:%s'):format(cache.serverId), function(_, _, value, _, replicated)
+    if replicated then return end
+    playerInstance = value or 0
+
+    if next(objects) then
+        local playerCoords = GetEntityCoords(cache.ped)
+
+        for i = 1, #objects do
+            local object = objects[i]
+
+            if object.instance == playerInstance then
+                if #(playerCoords - object.coords) < object.distance then
+                    createObject(object)
+                end
+            else
+                deleteObject(object)
+            end
+        end
+    end
+  end)

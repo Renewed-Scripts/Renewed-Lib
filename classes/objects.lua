@@ -1,3 +1,4 @@
+local useInteract = GetConvar('renewed_useinteract', 'false') == 'true'
 
 ---@class renewed_objects : OxClass
 ---@field object number | nil entity node
@@ -16,6 +17,7 @@
 ---@field target OxTargetOption | OxTargetOption[]
 ---@field interact table
 ---@field onEnter function
+---@field instance number | string
 ---@field onExit function
 ---@field resource string
 local object_class = lib.class('renewed_objects')
@@ -30,14 +32,15 @@ function object_class:constructor(objectData)
     -- Object related data
     self.id = objectData.id
     self.coords = objectData.coords.xyz -- Make explicit call to make sure vector is using xyz
-    self.heading = objectData.coords?.w or objectData.heading -- Backwards compatibility
+    self.heading = objectData.coords?.w or objectData.heading or 0 -- Backwards compatibility
     self.model = objectData.object or objectData.model -- Backwards compatibility shit
     self.distance = objectData.dist or 100
+    self.instance = objectData.instance or 0
 
     -- object settings data
     self.snapGround = objectData.snapGround or false
     self.freeze = objectData.freeze or false
-    self.canClimb = objectData.canClimb or falsei
+    self.canClimb = objectData.canClimb or false
     self.colissions = objectData.colissions or false
     self.hasAnim = objectData.anim and objectData.animSpeed and true or false
 
@@ -49,13 +52,6 @@ function object_class:constructor(objectData)
     -- Target and Interact support
     self.target = objectData.target
     self.interact = objectData.interact
-end
-
-
----Sets the object to either a spawned entity or nil, depending on if we are spawning or despawning the object.
----@param object any
-function object_class:setObject(object)
-    self.object = object
 end
 
 return object_class
