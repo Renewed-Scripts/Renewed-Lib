@@ -2,7 +2,7 @@
 local Controller = require 'framework.client'
 
 
-RegisterNetEvent('qbx_core:server:onGroupUpdate', function(groupName, groupGrade)
+RegisterNetEvent('qbx_core:client:onGroupUpdate', function(groupName, groupGrade)
     local Player = Controller.getPlayer()
 
     Player.Groups[groupName] = not groupGrade and nil or groupGrade
@@ -13,11 +13,11 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
 
     local groups = {}
 
-    for groupName, grade in pairs(Player.PlayerData.jobs) do
+    for groupName, grade in pairs(PlayerData.jobs) do
         groups[groupName] = grade
     end
 
-    for groupName, grade in pairs(Player.PlayerData.gangs) do
+    for groupName, grade in pairs(PlayerData.gangs) do
         groups[groupName] = grade
     end
 

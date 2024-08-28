@@ -9,7 +9,11 @@ local Player = {}
 ---Gets the player groups
 ---@return table<string, number>
 function Controller.getPlayerGroup()
-    return Player and Player.Group or {}
+    if table.type(Player) == 'empty' then
+        return {}
+    end
+
+    return Player:getPlayerGroups()
 end
 exports('getPlayerGroup', Controller.getPlayerGroup) -- This one is here for backwards compatability
 exports('getGroups', Controller.getPlayerGroup)
@@ -23,6 +27,16 @@ exports('getCharId', function()
 
     return Player:getCharId()
 end)
+
+---Gets the player name
+---@return string?
+function Controller.getCharName()
+    if table.type(Player) == 'empty' then
+        return
+    end
+
+    return Player:getName()
+end exports('getCharName', Controller.getCharName)
 
 ---Checks weather or not the player has a group
 ---@param group string
@@ -51,6 +65,12 @@ function Controller.removePlayer()
     Player = {}
 
     TriggerEvent('Renewed-Lib:client:PlayerUnloaded')
+end
+
+---Gets the player object
+---@return framework_class
+function Controller.getPlayer()
+    return Player
 end
 
 return Controller
