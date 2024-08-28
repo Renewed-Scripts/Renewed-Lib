@@ -5,6 +5,7 @@
 ---@field Groups table<string, number>
 ---@field job string?
 ---@field gang string?
+---@field source number? Source is nil if its on the client side
 local framework_class = lib.class('framework_class')
 
 function framework_class:constructor(data)
@@ -14,8 +15,6 @@ function framework_class:constructor(data)
     self.job = data.job
     self.gang = data.gang
     self.source = data.source
-
-    TriggerEvent('Renewed-Lib:server:playerLoaded', self.source, data)
 end
 
 ---Returns the player's charId

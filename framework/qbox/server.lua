@@ -1,7 +1,3 @@
-if GetResourceState('qbx_core') == 'missing' then
-    return
-end
-
 local Controller = require 'framework.server'
 
 ---Adds stress to a player by their source
