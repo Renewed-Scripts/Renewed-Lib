@@ -85,4 +85,8 @@ function Controller.removePlayer(source)
     end
 end
 
+AddEventHandler('playerDropped', function()
+    Controller.removePlayer(source)
+end)
+
 return Controller
