@@ -3,7 +3,8 @@ local frameworks = {
     { 'qbx_core', 'qbox' },
     { 'qb-core', 'qbcore' },
     { 'es-extended', 'esx' },
-    { 'ox_core', 'ox' }
+    { 'ox_core', 'ox' },
+    { 'ND_Core', 'ndcore' }
 }
 
 local filePath = IsDuplicityVersion() and 'server' or 'client'
