@@ -11,7 +11,7 @@ local Players = {}
 ---@return framework_class?
 function Controller.getPlayer(source)
     return Players[source]
-end exports('getSourceByCharId', Controller.getSourceByCharId)
+end exports('getPlayer', Controller.getPlayer)
 
 ---Gets a player object by their source
 ---@param source number
