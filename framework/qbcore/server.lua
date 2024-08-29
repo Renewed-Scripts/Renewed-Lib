@@ -1,7 +1,6 @@
 local Controller = require 'framework.server'
 
 local QBCore = exports['qb-core']:GetCoreObject()
-local Players = {}
 
 ---Adds stress to a player by their source
 ---@param source number

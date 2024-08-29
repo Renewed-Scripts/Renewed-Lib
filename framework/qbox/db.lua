@@ -16,7 +16,7 @@ end)
 local GET_OFFLINEMONEY = 'SELECT money FROM players WHERE citizenid = ?'
 ---Returns the money of a player by their charId
 ---@param charId string
----@return table?
+---@return { bank: number, cash: number }?
 exports('getOfflineMoney', function(charId)
     local result = MySQL.query.await(GET_OFFLINEMONEY, {charId})
 
