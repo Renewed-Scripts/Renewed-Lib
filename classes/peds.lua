@@ -3,6 +3,7 @@
 ---@class renewed_peds : OxClass
 ---@field coords vector3
 ---@field heading number
+---@field id string
 ---@field freeze boolean?
 ---@field invincible boolean?
 ---@field tempevents boolean?
@@ -11,12 +12,18 @@
 ---@field scenario string?
 ---@field target OxTargetOption | OxTargetOption[]?
 ---@field interact table?
+---@field onEnter function
+---@field instance number | string
+---@field onExit function
+---@field resource string
+---@field entity number | nil entity node
 local peds_class = lib.class('renewed_peds')
 
 
 ---intiates the ped class with all the appropriate data
 ---@param payload renewed_peds
 function peds_class:constructor(payload)
+    self.entity = nil
     self.model = payload.model
     self.coords = payload.coords.xyz
     self.heading = payload.coords?.w or payload.heading
