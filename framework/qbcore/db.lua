@@ -41,6 +41,6 @@ local REMOVE_OFFLINEMONEY = "UPDATE players SET money = JSON_SET(money, CONCAT('
 ---@param amount number
 ---@param moneyType 'cash' | 'bank'
 ---@return QueryResult|unknown|{ [number]: { [string]: unknown  }|{ [string]: unknown }|nil}
-function removeOfflineMoney(charId, amount, moneyType)
+exports('removeOfflineMoney', function(charId, amount, moneyType)
     return MySQL.prepare.await(REMOVE_OFFLINEMONEY, {moneyType, moneyType, amount, charId})
-end
+end)
