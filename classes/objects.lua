@@ -1,5 +1,3 @@
-local useInteract = GetConvar('renewed_useinteract', 'false') == 'true'
-
 ---@class renewed_objects : OxClass
 ---@field object number | nil entity node
 ---@field coords vector3
