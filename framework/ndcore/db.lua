@@ -1,3 +1,5 @@
+local MySQL = MySQL
+
 local GET_CHARNAME_IDENTIFIER = 'SELECT firstname, lastname FROM nd_characters WHERE charid = ?'
 ---Returns the full name of a character by their charId
 ---@param charId string
