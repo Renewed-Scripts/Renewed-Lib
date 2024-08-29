@@ -1,10 +1,10 @@
 -- We have to make this an array since qbox is acting like qbcore is started so to make sure we get the right data we do this
 local frameworks = {
+    { 'ND_Core', 'ndcore' },
     { 'qbx_core', 'qbox' },
     { 'qb-core', 'qbcore' },
     { 'es-extended', 'esx' },
     { 'ox_core', 'ox' },
-    { 'ND_Core', 'ndcore' }
 }
 
 local filePath = IsDuplicityVersion() and 'server' or 'client'
