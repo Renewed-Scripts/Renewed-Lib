@@ -110,7 +110,7 @@ local function deleteObject(self)
 
         self.object = nil
     end
-end exports('deleteObject', deleteObject)
+end
 
 ---adds a object to the object list
 ---@param payload renewed_objects
@@ -165,3 +165,4 @@ AddStateBagChangeHandler('instance', ('player:%s'):format(cache.serverId), funct
         end
     end
   end)
+

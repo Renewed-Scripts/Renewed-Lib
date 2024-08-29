@@ -71,7 +71,7 @@ function Controller.createPlayer(data)
 ---@diagnostic disable-next-line: invisible
     Players[data.source] = framework:new(data)
     TriggerEvent('Renewed-Lib:server:playerLoaded', data.source, data)
-end exports('createPlayer', Controller.createPlayer)
+end
 
 
 ---Removes a player object from the class
