@@ -4,6 +4,7 @@ local object_class = require 'classes.objects'
 local objects = {}
 
 local useInteract = GetConvar('renewed_useinteract', 'false') == 'true'
+local useSleeplessInteract = GetConvar('renewed_usesleeplessinteract', 'false') == 'true'
 local playerInstance = LocalPlayer.state.instance or 0
 
 ---goes through the array and find the index and returns that with the object
@@ -88,6 +89,10 @@ local function createObject(self)
         exports.interact:AddLocalEntityInteraction(self.interact)
     end
 
+    if useSleeplessInteract and self.interact then
+        interact.removeLocalEntity(obj)
+    end
+
     self.object = obj
 end
 
@@ -106,6 +111,10 @@ local function deleteObject(self)
 
         if useInteract and self.interact then
             exports.interact:RemoveLocalEntityInteraction(self.spawned, self.interact?.id)
+        end
+        
+        if useSleeplessInteract and self.interact then
+            interact.removeLocalEntity(self.spawned)
         end
 
         self.object = nil

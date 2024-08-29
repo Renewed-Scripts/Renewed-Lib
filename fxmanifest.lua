@@ -13,6 +13,7 @@ shared_script {
 }
 
 client_scripts {
+    '@sleepless_interact/init.lua',
     'modules/**/client.lua',
 }
 

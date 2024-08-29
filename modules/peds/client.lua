@@ -5,6 +5,7 @@ local Peds = {}
 
 local playerInstance = LocalPlayer.state.instance or 0
 local useInteract = GetConvar('renewed_useinteract', 'false') == 'true'
+local useSleeplessInteract = GetConvar('renewed_usesleeplessinteract', 'false') == 'true'
 
 ---Spawns the ped on enter
 ---@param self renewed_peds
@@ -36,6 +37,12 @@ local function spawnPed(self)
         exports.interact:AddLocalEntityInteraction(self.interact)
     end
 
+    if useSleeplessInteract and self.interact then
+        self.interact.entity = ped
+        interact.addLocalEntity(self.interact)
+         
+    end
+
     SetModelAsNoLongerNeeded(self.model)
 
     self.entity = ped
@@ -54,8 +61,12 @@ local function deletePed(self)
             end
         end
 
-        if self.interact then
+        if useInteract and self.interact then
             exports.interact:RemoveLocalEntityInteraction(self.entity, self.interact?.id)
+        end
+
+        if useSleeplessInteract and self.interact then
+            interact.removeLocalEntity(self.entity)
         end
 
         self.entity = nil
