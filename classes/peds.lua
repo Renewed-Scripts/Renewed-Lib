@@ -1,9 +1,10 @@
 
 
 ---@class renewed_peds : OxClass
----@field coords vector3
+---@field coords vector3 | vector4
 ---@field heading number
 ---@field id string
+---@field distance number
 ---@field freeze boolean?
 ---@field invincible boolean?
 ---@field tempevents boolean?
@@ -24,6 +25,7 @@ local peds_class = lib.class('renewed_peds')
 ---@param payload renewed_peds
 function peds_class:constructor(payload)
     self.entity = nil
+    self.distance = payload.distance or payload.dist or 100
     self.model = payload.model
     self.coords = payload.coords.xyz
     self.heading = payload.coords?.w or payload.heading

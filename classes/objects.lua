@@ -32,7 +32,7 @@ function object_class:constructor(objectData)
     self.coords = objectData.coords.xyz -- Make explicit call to make sure vector is using xyz
     self.heading = objectData.coords?.w or objectData.heading or 0 -- Backwards compatibility
     self.model = objectData.object or objectData.model -- Backwards compatibility shit
-    self.distance = objectData.dist or 100
+    self.distance = payload.distance or payload.dist or 100
     self.instance = objectData.instance or 0
 
     -- object settings data

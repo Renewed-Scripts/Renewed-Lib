@@ -1,8 +1,10 @@
-local useInteract = GetConvar('renewed_useinteract', 'false') == 'true'
 local pedClass = require 'classes.peds'
 
----@type table<number, renewed_peds>
+---@type table<number, CPoint>
 local Peds = {}
+
+local playerInstance = LocalPlayer.state.instance or 0
+local useInteract = GetConvar('renewed_useinteract', 'false') == 'true'
 
 ---Spawns the ped on enter
 ---@param self renewed_peds
@@ -36,7 +38,7 @@ local function spawnPed(self)
 
     SetModelAsNoLongerNeeded(self.model)
 
-    return ped
+    self.entity = ped
 end
 
 ---Deletes the ped on exit
@@ -60,6 +62,8 @@ local function deletePed(self)
     end
 end
 
+---Adds a ped to the list of spawnable peds on the server
+---@param payload renewed_peds | renewed_peds[]
 exports('addPed', function(payload)
     payload = table.type(payload) == 'array' and payload or { payload }
 
@@ -71,10 +75,12 @@ exports('addPed', function(payload)
         ped.onEnter = spawnPed
         ped.onExit = deletePed
 
-        Peds[#Peds+1] = ped
+        Peds[#Peds+1] = lib.points.new(ped)
     end
 end)
 
+---Removes a ped from the list of spawnable peds on the server
+---@param id string
 exports('removePed', function(id)
     if id then
         for i = #Peds, 1, -1 do
@@ -92,6 +98,10 @@ exports('removePed', function(id)
     end
 end)
 
+---Sets the ped's coords and heading
+---@param id string
+---@param coords vector3 | vector4
+---@param heading number?
 exports('setPedCoords', function(id, coords, heading)
     if id and coords then
         for i = 1, #Peds do
@@ -124,3 +134,24 @@ AddEventHandler('onClientResourceStop', function(resource)
         end
     end
 end)
+
+AddStateBagChangeHandler('instance', ('player:%s'):format(cache.serverId), function(_, _, value, _, replicated)
+    if replicated then return end
+    playerInstance = value or 0
+
+    if next(Peds) then
+        local playerCoords = GetEntityCoords(cache.ped)
+
+        for i = 1, #Peds do
+            local ped = Peds[i]
+
+            if ped.instance == playerInstance then
+                if #(playerCoords - ped.coords) < ped.distance then
+                    spawnPed(ped)
+                end
+            else
+                deletePed(ped)
+            end
+        end
+    end
+  end)
