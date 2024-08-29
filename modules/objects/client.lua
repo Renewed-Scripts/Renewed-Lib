@@ -12,11 +12,13 @@ local playerInstance = LocalPlayer.state.instance or 0
 ---@return CPoint?
 local function getObject(id)
     if id then
-        local index = lib.array.find(objects, function(object)
-            return object.id == id
-        end)
+        for i = 1, #objects do
+            local object = objects[i]
 
-        return index, index and objects[index]
+            if object.id == id then
+                return i, object
+            end
+        end
     end
 
     return nil, nil
@@ -82,7 +84,7 @@ local function createObject(self)
     end
 
     if useInteract and self.interact then
-        object.interact.entity = obj
+        self.interact.entity = obj
         exports.interact:AddLocalEntityInteraction(self.interact)
     end
 
