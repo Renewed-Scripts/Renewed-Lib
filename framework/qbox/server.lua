@@ -35,13 +35,13 @@ exports('getMoney', function(source, moneyType)
 end)
 
 ---Removes money from a player's account by their source
----@param src number
+---@param source number
 ---@param amount number
 ---@param moneyType 'cash' | 'bank'
 ---@param reason string?
 ---@return boolean
-exports('removeMoney', function(src, amount, moneyType, reason)
-    local Player = exports.qbx_core:GetPlayer(src)
+exports('removeMoney', function(source, amount, moneyType, reason)
+    local Player = exports.qbx_core:GetPlayer(source)
 
     if Player and Player.PlayerData.money[moneyType] >= amount then
         return Player.Functions.RemoveMoney(moneyType, amount, reason or "unknown")
