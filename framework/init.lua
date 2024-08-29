@@ -3,7 +3,7 @@ local frameworks = {
     { 'ND_Core', 'ndcore' },
     { 'qbx_core', 'qbox' },
     { 'qb-core', 'qbcore' },
-    { 'es-extended', 'esx' },
+    { 'es_extended', 'esx' },
     { 'ox_core', 'ox' },
 }
 
