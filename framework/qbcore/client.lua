@@ -44,7 +44,11 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
 end)
 
 RegisterNetEvent('QBCore:Client:SetDuty', function(enabled)
-    LocalPlayer.state:set('renewed_service', enabled and Player.job or false, true)
+    local Player = Controller.getPlayer()
+
+    if table.type(Player) ~= 'empty' then
+        LocalPlayer.state:set('renewed_service', enabled and Player.job or false, true)
+    end
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
