@@ -48,7 +48,7 @@ RegisterNetEvent('ND:characterLoaded', function()
 
     Controller.createPlayer({
         Groups = groups,
-        charId = PlayerData.charid,
+        charId = PlayerData.id,
         job = PlayerData.job,
         name = PlayerData.fullname
     })
