@@ -6,6 +6,10 @@ local inventories = {}
 local openedBy = {}
 local shops = {}
 
+---Adds an item to the second slot
+---@param id string
+---@param price number
+---@param payload table
 local function addItemToSecondSlot(id, price, payload)
     SetTimeout(50, function()
         local addMoney = ox_inventory:AddItem(id, 'money', price, nil, 1)
@@ -20,6 +24,9 @@ local function addItemToSecondSlot(id, price, payload)
     end)
 end
 
+---Resets the inventory state
+---@param source number
+---@param id string
 local function resetInventory(source, id)
     SetTimeout(100, function()
         local items = ox_inventory:GetInventoryItems(id)
@@ -32,6 +39,10 @@ local function resetInventory(source, id)
     end)
 end
 
+---Prepares the stash for usage by registering it and clearing it
+---@param id string
+---@param label string
+---@param coords vector3
 local function prepStash(id, label, coords)
     ox_inventory:RegisterStash(id, label, 2, 9000000, nil, nil, coords and vec3(coords.x, coords.y, coords.z) or nil)
     ox_inventory:ClearInventory(id, false)
