@@ -71,6 +71,6 @@ end
 ---@return framework_class
 function Controller.getPlayer()
     return Player
-end
+end exports('getPlayer', Controller.getPlayer)
 
 return Controller
