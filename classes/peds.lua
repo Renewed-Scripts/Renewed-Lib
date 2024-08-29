@@ -3,7 +3,7 @@
 ---@class renewed_peds : OxClass
 ---@field coords vector3 | vector4
 ---@field heading number
----@field id string
+---@field pedId string
 ---@field distance number
 ---@field freeze boolean?
 ---@field invincible boolean?
@@ -29,6 +29,7 @@ function peds_class:constructor(payload)
     self.model = payload.model
     self.coords = payload.coords.xyz
     self.heading = payload.coords?.w or payload.heading
+    self.pedId = payload.id
 
     self.freeze = payload.freeze or false
     self.invincible = payload.invincible or false

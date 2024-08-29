@@ -86,7 +86,7 @@ exports('removePed', function(id)
         for i = #Peds, 1, -1 do
             local ped = Peds[i]
 
-            if ped.id == id then
+            if ped.pedId == id then
                 if ped.entity then
                     deletePed(ped)
                 end
@@ -106,7 +106,7 @@ exports('setPedCoords', function(id, coords, heading)
     if id and coords then
         for i = 1, #Peds do
             local item = Peds[i]
-            if item.id == id then
+            if item.pedId == id then
                 item.coords = coords.xyz
                 item.heading = coords.w or heading
 

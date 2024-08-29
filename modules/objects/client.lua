@@ -15,7 +15,7 @@ local function getObject(id)
         for i = 1, #objects do
             local object = objects[i]
 
-            if object.id == id then
+            if object.objectId == id then
                 return i, object
             end
         end
@@ -70,7 +70,10 @@ local function createObject(self)
 
     FreezeEntityPosition(obj, self.freeze)
     SetCanClimbOnEntity(obj, self.canClimb)
-    SetEntityCollision(obj, self.colissions, self.colissions)
+
+    if type(self.colissions) == 'boolean' then
+        SetEntityCollision(obj, self.colissions, self.colissions)
+    end
 
     if self.hasAnim then
       SetEntityMaxSpeed(obj, 100)

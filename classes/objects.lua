@@ -28,7 +28,7 @@ function object_class:constructor(objectData)
     self.object = nil
 
     -- Object related data
-    self.id = objectData.id
+    self.objectId = objectData.id
     self.coords = objectData.coords.xyz -- Make explicit call to make sure vector is using xyz
     self.heading = objectData.coords?.w or objectData.heading or 0 -- Backwards compatibility
     self.model = objectData.object or objectData.model -- Backwards compatibility shit
@@ -39,7 +39,7 @@ function object_class:constructor(objectData)
     self.snapGround = objectData.snapGround or false
     self.freeze = objectData.freeze or false
     self.canClimb = objectData.canClimb or false
-    self.colissions = objectData.colissions or false
+    self.colissions = objectData.colissions
     self.hasAnim = objectData.anim and objectData.animSpeed and true or false
 
     if self.hasAnim then
