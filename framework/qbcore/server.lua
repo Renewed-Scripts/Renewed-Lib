@@ -146,3 +146,5 @@ end)
 
 
 AddEventHandler('QBCore:Server:OnPlayerUnload', Controller.removePlayer)
+
+require 'framework.qbcore.db'
