@@ -38,6 +38,11 @@ local function prepStash(id, label, coords)
 end
 
 
+---Creates a sales stash, where players can insert items into a stash and get money in return
+---@param id string
+---@param label string
+---@param items table<string, number>
+---@param coords vector3
 exports('CreateSaleStash', function(id, label, items, coords)
     id = ('stashshop_%s'):format(id)
 

@@ -26,8 +26,8 @@ end
 ---Generate loot
 ---@param id string
 ---@param maxLoot integer
----@return table | boolean
-exports('GenerateLoot', function(id, minLoot, maxLoot)
+---@return table<string, {amount: integer, metadata: table?}>?
+local function generateLoot(id, minLoot, maxLoot)
     if not lootTables[id] then
         error('Invalid loot table ID:' .. tostring(id))
     end
@@ -35,7 +35,7 @@ exports('GenerateLoot', function(id, minLoot, maxLoot)
     local rewards = lootTables[id]
 
     if not next(rewards) then
-        return false
+        return
     end
 
     local loot = {}
@@ -67,4 +67,4 @@ exports('GenerateLoot', function(id, minLoot, maxLoot)
     end
 
     return loot
-end)
+end exports('GenerateLoot', generateLoot)
