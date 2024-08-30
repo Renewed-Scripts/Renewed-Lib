@@ -89,4 +89,52 @@ AddEventHandler('playerDropped', function()
     Controller.removePlayer(source)
 end)
 
+
+
+local PoliceJobs = json.decode(GetConvar('renewed:policeJobs', '["police", "sheriff"]'))
+
+local onDutyCops = {}
+local copCount = 0
+
+AddStateBagChangeHandler('renewed_service', nil, function(bagname, _, value)
+    local Player = GetPlayerFromStateBagName(bagname)
+
+    if Player == 0 then
+        return
+    end
+
+    if value and lib.table.contains(PoliceJobs, value) then
+        copCount += 1
+        onDutyCops[Player] = value
+        GlobalState.copCount = copCount
+    elseif onDutyCops[Player] then
+        copCount -= 1
+        onDutyCops[Player] = nil
+        GlobalState.copCount = copCount
+    end
+end)
+
+---Returns the current cops on duty and which job they are on Duty as
+---@return table<number, string>
+exports('GetCopsOnDuty', function()
+    return onDutyCops
+end)
+
+---Returns weather or not the player is a cop
+---@param source number
+---@return boolean
+exports('IsPlayerACop', function(source)
+    local Player = Players[source]
+
+    if Player then
+        for job in pairs(Player.Groups) do
+            if lib.table.contains(PoliceJobs, job) then
+                return true
+            end
+        end
+    end
+
+    return false
+end)
+
 return Controller
