@@ -14,18 +14,20 @@ shared_script {
 
 client_scripts {
     'modules/**/client.lua',
+    'groups/client.lua'
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'modules/**/server.lua',
+    'groups/init.lua'
 }
 
 
 files {
     'init.lua',
     'classes/*.lua',
-	'framework/**/client.lua',
+	'framework/**/client.lua'
 }
 
 dependency 'ox_lib'
