@@ -119,7 +119,7 @@ end)
 ---Adds needs (hunger, thirst) to a player, returns true/false depending on success and reason why it failed
 ---@param source number
 ---@param needs { hunger: number, thirst: number }
----@return boolean
+---@return boolean?
 ---@return string?
 exports('addNeeds', function(source, needs)
     if type(needs) ~= "table" then return end
