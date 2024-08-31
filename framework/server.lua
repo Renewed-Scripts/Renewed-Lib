@@ -102,7 +102,7 @@ end)
 
 
 
-local PoliceJobs = json.decode(GetConvar('inventory:police', '["police", "sheriff"]')),
+local PoliceJobs = json.decode(GetConvar('inventory:police', '["police", "sheriff"]'))
 
 local onDutyCops = {}
 local copCount = 0
