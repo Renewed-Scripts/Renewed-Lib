@@ -23,6 +23,14 @@ exports('GetPlayerGroup', function(source)
     return source
 end)
 
+---On standalone we will just return the source
+---@param source number
+---@return boolean
+exports('IsPlayerGroupLeader', function(source)
+    return true
+end)
+
+
 ---On standalone we will just trigger the notification on the source
 ---@param groupId number
 ---@param payload NotifyProps
