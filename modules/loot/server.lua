@@ -4,7 +4,7 @@ local lootTables = {}
 ---register loot table
 ---@param id string
 ---@param data table
-local function registerLootTable(id, data)
+exports('RegisterLootTable', function(id, data)
     if not id or not data then return end
 
     data = table.type(data) == 'array' and data or { data }
@@ -14,7 +14,7 @@ local function registerLootTable(id, data)
     end)
 
     lootTables[id] = data
-end exports('RegisterLootTable', registerLootTable)
+end)
 
 ---Get the amount of items the player should recieve
 ---@param item table
@@ -26,7 +26,7 @@ end
 ---Generate loot
 ---@param id string
 ---@param maxLoot integer
----@return table | boolean
+---@return table<string, {amount: integer, metadata: table?}>?
 local function generateLoot(id, minLoot, maxLoot)
     if not lootTables[id] then
         error('Invalid loot table ID:' .. tostring(id))
@@ -35,7 +35,7 @@ local function generateLoot(id, minLoot, maxLoot)
     local rewards = lootTables[id]
 
     if not next(rewards) then
-        return false
+        return
     end
 
     local loot = {}
