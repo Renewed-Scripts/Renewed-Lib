@@ -64,6 +64,17 @@ function Controller.getGroups(source)
 end exports('getGroups', Controller.getGroups)
 
 
+---Gets a player source from their character id
+---@param charId string
+exports('getPlayerFromCharId', function(charId)
+    for source, v in pairs(Players) do
+        if v:getCharId() == charId then
+            return source
+        end
+    end
+end)
+
+
 
 ---Creates a player object and assigns it to the class
 ---@param data framework_class
