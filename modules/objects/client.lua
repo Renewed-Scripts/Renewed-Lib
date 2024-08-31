@@ -115,6 +115,26 @@ local function deleteObject(self)
     end
 end
 
+---Changes the object model, coords and heading
+---@param id string
+---@param newObject string | number
+---@param newCoords vector3
+---@param newHeading number
+exports('changeObject', function(id, newObject, newCoords, newHeading)
+    local _, object = getObject(id)
+
+    if object then
+        object.model = newObject
+        object.coords = newCoords or object.coords
+        object.heading = newHeading or object.heading
+
+        if object.object then
+            deleteObject(object)
+            createObject(object)
+        end
+    end
+end)
+
 ---adds a object to the object list
 ---@param payload renewed_objects
 exports('addObject', function(payload)
