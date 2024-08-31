@@ -1,3 +1,5 @@
+assert(lib.checkDependency('qbx_core', '1.17.2'), 'qbx_core v1.17.2 or higher is required to use this script')
+
 local Controller = require 'framework.server'
 
 ---Adds stress to a player by their source
