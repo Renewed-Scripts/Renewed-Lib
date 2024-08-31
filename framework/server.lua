@@ -84,6 +84,8 @@ function Controller.createPlayer(data)
     TriggerEvent('Renewed-Lib:server:playerLoaded', data.source, data)
 end
 
+local onDutyCops = {}
+
 
 ---Removes a player object from the class
 ---@param source number
@@ -93,6 +95,11 @@ function Controller.removePlayer(source)
     if Player then
         Players[source] = nil
         TriggerEvent('Renewed-Lib:server:playerRemoved', source, Player)
+
+        if onDutyCops[source] then
+            onDutyCops[source] = nil
+            GlobalState.copCount -= 1
+        end
     end
 end
 
@@ -103,9 +110,7 @@ end)
 
 
 local PoliceJobs = json.decode(GetConvar('inventory:police', '["police", "sheriff"]'))
-
-local onDutyCops = {}
-local copCount = 0
+GlobalState.copCount = 0 -- Ensure the global state is never nil
 
 AddStateBagChangeHandler('renewed_service', nil, function(bagname, _, value)
     local Player = GetPlayerFromStateBagName(bagname)
@@ -115,13 +120,11 @@ AddStateBagChangeHandler('renewed_service', nil, function(bagname, _, value)
     end
 
     if value and lib.table.contains(PoliceJobs, value) then
-        copCount += 1
         onDutyCops[Player] = value
-        GlobalState.copCount = copCount
+        GlobalState.copCount += 1
     elseif onDutyCops[Player] then
-        copCount -= 1
         onDutyCops[Player] = nil
-        GlobalState.copCount = copCount
+        GlobalState.copCount -= 1
     end
 end)
 
