@@ -12,7 +12,7 @@ CreateThread(function()
         local framework = groups[i]
 
         if GetResourceState(framework[1]) ~= 'missing' then
-            local path = ('framework.%s.server'):format(framework[2])
+            local path = ('groups.%s.server'):format(framework[2])
 
             require(path)
 
