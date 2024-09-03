@@ -10,7 +10,7 @@ RegisterNetEvent('esx:setPlayerData', function(key, value)
     end
 
     Player.Groups = { [value.name] = value.grade }
-    TriggerEvent('Renewed-Lib:client:UpdateGroup', Player.Group)
+    TriggerEvent('Renewed-Lib:client:UpdateGroup', Player.Groups)
 end)
 
 RegisterNetEvent('esx:playerLoaded',function(xPlayer)
