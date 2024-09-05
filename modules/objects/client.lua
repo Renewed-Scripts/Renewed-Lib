@@ -51,6 +51,8 @@ exports('removeObject', function(id)
             DeleteEntity(object.object)
         end
 
+        object:remove()
+
         table.remove(objects, index)
     end
 end)

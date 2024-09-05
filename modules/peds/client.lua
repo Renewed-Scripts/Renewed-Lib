@@ -91,6 +91,8 @@ exports('removePed', function(id)
                     deletePed(ped)
                 end
 
+                ped:remove()
+
                 table.remove(Peds, i)
                 break
             end
@@ -129,6 +131,8 @@ AddEventHandler('onClientResourceStop', function(resource)
             if ped.entity then
                 deletePed(ped)
             end
+
+            ped:remove()
 
             table.remove(Peds, i)
         end
