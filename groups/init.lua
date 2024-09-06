@@ -25,3 +25,5 @@ CreateThread(function()
         require 'groups.standalone.server'
     end
 end)
+
+lib.versionCheck('Renewed-Scripts/Renewed-Lib')
