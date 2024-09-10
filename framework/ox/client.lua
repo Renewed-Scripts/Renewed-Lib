@@ -16,9 +16,9 @@ AddEventHandler('ox:playerLoaded', function()
     local currentPlayer = Ox.GetPlayer()
 
     Controller.createPlayer({
-        Groups = currentPlayer.stateId,
-        charId = currentPlayer.getGroups(),
-        name = currentPlayer.name
+        Groups = currentPlayer.getGroups(),
+        charId = currentPlayer.stateId,
+        name = currentPlayer.get('fullName')
     })
 end)
 
