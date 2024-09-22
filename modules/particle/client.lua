@@ -1,5 +1,7 @@
 local entityParticle = {}
 
+local requestTimeouts = GetConvarInt('renewed_requesttimeouts', 10000)
+
 AddStateBagChangeHandler('entityParticle', nil, function(bagName, _, value)
     local entity = GetEntityFromStateBagName(bagName)
 
@@ -12,7 +14,7 @@ AddStateBagChangeHandler('entityParticle', nil, function(bagName, _, value)
 
     if value and type(value) == 'table' then
         local offset, rotation = value.offset, value.rotation
-        lib.requestNamedPtfxAsset(value.dict, 1000)
+        lib.requestNamedPtfxAsset(value.dict, requestTimeouts)
 
         UseParticleFxAsset(value.dict)
 

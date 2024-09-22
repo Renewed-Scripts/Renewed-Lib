@@ -5,11 +5,12 @@ local Peds = {}
 
 local playerInstance = LocalPlayer.state.instance or 0
 local useInteract = GetConvar('renewed_useinteract', 'false') == 'true'
+local requestTimeouts = GetConvarInt('renewed_requesttimeouts', 10000)
 
 ---Spawns the ped on enter
 ---@param self renewed_peds
 local function spawnPed(self)
-    lib.requestModel(self.model, 1000)
+    lib.requestModel(self.model, requestTimeouts)
 
     local ped = CreatePed(0, self.model, self.coords.x, self.coords.y, self.coords.z, self.heading, false, true)
 
@@ -18,7 +19,7 @@ local function spawnPed(self)
     SetBlockingOfNonTemporaryEvents(ped, self.tempevents)
 
     if self.animDict and self.animName then
-        lib.requestAnimDict(self.animDict, 1000)
+        lib.requestAnimDict(self.animDict, requestTimeouts)
         TaskPlayAnim(ped, self.animDict, self.animName, 8.0, 0, -1, 1, 0, 0, 0)
         RemoveAnimDict(self.animDict)
     end
