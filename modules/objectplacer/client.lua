@@ -1,5 +1,7 @@
 local placingObj
 
+local requestTimeouts = GetConvarInt('renewed_requesttimeouts', 10000)
+
 -- Object placer --
 local OxTxt = {
     '-- Place Object --  \n',
@@ -37,7 +39,7 @@ exports('placeObject', function(object, dist, snapGround, text, allowedMats, off
 
     local txt = text or OxTxt
 
-    lib.requestModel(obj)
+    lib.requestModel(requestTimeouts)
 
     placingObj = CreateObject(obj, 1.0, 1.0, 1.0, false, true, true)
     SetModelAsNoLongerNeeded(obj)

@@ -4,6 +4,7 @@ local object_class = require 'classes.objects'
 local objects = {}
 
 local useInteract = GetConvar('renewed_useinteract', 'false') == 'true'
+local requestTimeouts = GetConvarInt('renewed_requesttimeouts', 10000)
 local playerInstance = LocalPlayer.state.instance or 0
 
 ---goes through the array and find the index and returns that with the object
@@ -61,7 +62,7 @@ end)
 ---@param self renewed_objects
 local function createObject(self)
     if playerInstance ~= self.instance then return end
-    lib.requestModel(self.model)
+    lib.requestModel(self.model, requestTimeouts)
 
     local obj = CreateObject(self.model, self.coords.x, self.coords.y, self.coords.z, false, true, true)
     SetEntityHeading(obj, self.heading)
