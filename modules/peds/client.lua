@@ -69,7 +69,7 @@ exports('addPed', function(payload)
     payload = table.type(payload) == 'array' and payload or { payload }
 
     for i = 1, #payload do
----@diagnostic disable-next-line: invisible
+        ---@diagnostic disable-next-line: invisible
         local ped = pedClass:new(payload[i])
 
         ped.resource = GetInvokingResource() or GetCurrentResourceName()
@@ -99,6 +99,23 @@ exports('removePed', function(id)
             end
         end
     end
+end)
+
+---Gets a ped by its id
+---@param id string
+---@return renewed_peds | nil
+exports('getPedById', function(id)
+    if id then
+        for i = 1, #Peds do
+            local ped = Peds[i]
+
+            if ped.pedId == id then
+                return ped
+            end
+        end
+    end
+
+    return nil
 end)
 
 ---Sets the ped's coords and heading
