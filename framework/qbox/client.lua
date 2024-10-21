@@ -2,11 +2,29 @@ assert(lib.checkDependency('qbx_core', '1.17.2'), 'qbx_core v1.17.2 or higher is
 
 local Controller = require 'framework.client'
 
-
-RegisterNetEvent('qbx_core:client:onGroupUpdate', function(groupName, groupGrade)
+-- Group Updaters --
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(job)
     local Player = Controller.getPlayer()
 
-    Player.Groups[groupName] = not groupGrade and nil or groupGrade
+    if table.type(Player) == 'empty' then return end
+
+    Player.Groups[Player.job] = nil
+    Player.Groups[job.name] = job.grade.level
+    Player.job = job.name
+
+    TriggerEvent('Renewed-Lib:client:UpdateGroup', Player.Groups)
+end)
+
+RegisterNetEvent('QBCore:Client:OnGangUpdate', function(job)
+    local Player = Controller.getPlayer()
+
+    if table.type(Player) == 'empty' then return end
+
+    Player.Groups[Player.gang] = nil
+    Player.Groups[job.name] = job.grade.level
+    Player.gang = job.name
+
+    TriggerEvent('Renewed-Lib:client:UpdateGroup', Player.Groups)
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
@@ -24,8 +42,10 @@ RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
 
     Controller.createPlayer({
         Groups = groups,
+        job = PlayerData.job.name,
+        gang = PlayerData.gang.name,
         charId = PlayerData.citizenid,
-        name = PlayerData.charinfo.firstname .. ' ' .. PlayerData.charinfo.lastname
+        name = PlayerData.charinfo.firstname .. ' ' .. PlayerData.charinfo.lastname,
     })
 
     LocalPlayer.state:set('renewed_service', PlayerData.job.onduty and PlayerData.job.name or false, true)
