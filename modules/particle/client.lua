@@ -20,6 +20,11 @@ AddStateBagChangeHandler('entityParticle', nil, function(bagName, _, value)
 
         entityParticle[entity] = StartParticleFxLoopedOnEntity(value.effect, entity, offset.x, offset.y, offset.z, rotation.x, rotation.y, rotation.z, value.scale or 1.0, false, false, false)
 
+        if value.color then -- Set color (if allowed for ptfx)
+            local r, g, b = value.color.r or 100, value.color.g or 100, value.color.b or 100
+            SetParticleFxLoopedColour(entityParticle[entity], r, g, b, true)
+        end
+
         RemoveNamedPtfxAsset(value.dict)
     end
 end)
