@@ -5,7 +5,7 @@ lua54 'yes'
 
 author "Renewed Scripts"
 description 'Renewed Scripts is a collection of functions and classes to help you create more compatability between your scripts.'
-version '2.0.4'
+version '2.0.5'
 
 shared_script {
     '@ox_lib/init.lua',
