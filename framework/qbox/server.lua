@@ -94,12 +94,28 @@ exports('addNeeds', function(source, needs)
     return true
 end)
 
-
-AddEventHandler('qbx_core:server:onGroupUpdate', function(source, groupName, groupGrade)
+-- Group Updaters --
+AddEventHandler('QBCore:Server:OnJobUpdate', function(source, job)
     local Player = Controller.getPlayer(source)
 
     if Player then
-        Player.Groups[groupName] = not groupGrade and nil or groupGrade
+        TriggerEvent('Renewed-Lib:server:JobUpdate', source, Player.job, job.name, job.grade.level)
+
+        Player.Groups[Player.job] = nil
+        Player.Groups[job.name] = job.grade.level
+        Player.job = job.name
+    end
+end)
+
+AddEventHandler('QBCore:Server:OnGangUpdate', function(source, job)
+    local Player = Controller.getPlayer(source)
+
+    if Player then
+        TriggerEvent('Renewed-Lib:server:JobUpdate', source, Player.gang, job.name, job.grade.level)
+
+        Player.Groups[Player.gang] = nil
+        Player.Groups[job.name] = job.grade.level
+        Player.gang = job.name
     end
 end)
 
@@ -119,6 +135,8 @@ AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
         name = Player.PlayerData.charinfo.firstname .. ' ' .. Player.PlayerData.charinfo.lastname,
         charId = Player.PlayerData.citizenid,
         Groups = groups,
+        job = Player.PlayerData.job.name,
+        gang = Player.PlayerData.gang.name,
     })
 end)
 

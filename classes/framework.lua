@@ -40,11 +40,11 @@ end
 ---@param grade number?
 ---@return boolean
 function framework_class:hasGroup(group, grade)
-    if grade then
+    if grade and self.Groups[group] then
         return self.Groups[group] >= grade
     end
 
-    return true
+    return (self.Groups[group] ~= nil)
 end
 
 
