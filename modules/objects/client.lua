@@ -98,6 +98,7 @@ local function createObject(self)
         lib.requestNamedPtfxAsset(self.particle.dict, 1000)
         UseParticleFxAssetNextCall(self.particle.dict)
         self.particle.particle = StartParticleFxLoopedOnEntity(self.particle.name, obj, self.particle.offsetX or 0.0, self.particle.offsetY or 0.0, self.particle.offsetZ or 0.0, self.particle.rotX or 0.0, self.particle.rotY or 0.0, self.particle.rotZ or 0.0, self.particle.scale or 1.0, 0.0, 0.0, 0.0)
+        RemoveNamedPtfxAsset(self.particle.dict)
     end
 
     self.object = obj
@@ -107,6 +108,10 @@ end
 ---@param self renewed_objects
 local function deleteObject(self)
     if self.object and DoesEntityExist(self.object) then
+        if self.particle then
+            StopParticleFxLooped(self.particle.particle, 0)
+        end
+        
         SetEntityAsMissionEntity(self.object, false, true)
         DeleteEntity(self.object)
         if self.target then
@@ -117,10 +122,6 @@ local function deleteObject(self)
 
         if useInteract and self.interact then
             exports.interact:RemoveLocalEntityInteraction(self.spawned, self.interact?.id)
-        end
-
-        if self.particle then
-            StopParticleFxLooped(self.particle.particle, 0)
         end
 
         self.object = nil
@@ -194,6 +195,7 @@ exports('addObjectParticle', function(id, dict, name, offsetX, offsetY, offsetZ,
         lib.requestNamedPtfxAsset(object.particle.dict, 1000)
         UseParticleFxAssetNextCall(object.particle.dict)
         object.particle.particle = StartParticleFxLoopedOnEntity(object.particle.name, object.object, object.particle.offsetX, object.particle.offsetY, object.particle.offsetZ, object.particle.rotX, object.particle.rotY, object.particle.rotZ, object.particle.scale, 0.0, 0.0, 0.0)
+        RemoveNamedPtfxAsset(object.particle.dict)
     end
 end)
 
