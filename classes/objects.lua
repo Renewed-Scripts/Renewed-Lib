@@ -34,6 +34,7 @@ function object_class:constructor(objectData)
     self.model = objectData.object or objectData.model -- Backwards compatibility shit
     self.distance = objectData.distance or objectData.dist or 100
     self.instance = objectData.instance or 0
+    self.particle = objectData.particle
 
     -- object settings data
     self.snapGround = objectData.snapGround or false

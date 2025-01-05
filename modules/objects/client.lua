@@ -68,7 +68,7 @@ local function createObject(self)
     SetEntityHeading(obj, self.heading)
 
     if self.snapGround then
-      PlaceObjectOnGroundProperly(obj)
+        PlaceObjectOnGroundProperly(obj)
     end
 
     FreezeEntityPosition(obj, self.freeze)
@@ -79,8 +79,8 @@ local function createObject(self)
     end
 
     if self.hasAnim then
-      SetEntityMaxSpeed(obj, 100)
-      SetEntityAnimSpeed(obj, self.anim[1], self.anim[2], self.animSpeed)
+        SetEntityMaxSpeed(obj, 100)
+        SetEntityAnimSpeed(obj, self.anim[1], self.anim[2], self.animSpeed)
     end
 
     SetModelAsNoLongerNeeded(self.model)
@@ -94,9 +94,14 @@ local function createObject(self)
         exports.interact:AddLocalEntityInteraction(self.interact)
     end
 
+    if self.particle and self.particle.dict and self.particle.name then
+        lib.requestNamedPtfxAsset(self.particle.dict, 1000)
+        UseParticleFxAssetNextCall(self.particle.dict)
+        self.particle.particle = StartParticleFxLoopedOnEntity(self.particle.name, obj, self.particle.offsetX or 0.0, self.particle.offsetY or 0.0, self.particle.offsetZ or 0.0, self.particle.rotX or 0.0, self.particle.rotY or 0.0, self.particle.rotZ or 0.0, self.particle.scale or 1.0, 0.0, 0.0, 0.0)
+    end
+
     self.object = obj
 end
-
 
 ---Deletes the spawned object if its spawned
 ---@param self renewed_objects
@@ -112,6 +117,10 @@ local function deleteObject(self)
 
         if useInteract and self.interact then
             exports.interact:RemoveLocalEntityInteraction(self.spawned, self.interact?.id)
+        end
+
+        if self.particle then
+            StopParticleFxLooped(self.particle.particle, 0)
         end
 
         self.object = nil
@@ -156,6 +165,48 @@ exports('addObject', function(payload)
     end
 end)
 
+---Adds a particle to an object
+---@param id string
+---@param dict string
+---@param name string
+---@param offsetX number?
+---@param offsetY number?
+---@param offsetZ number?
+---@param rotX number?
+---@param rotY number?
+---@param rotZ number?
+---@param scale number?
+exports('addObjectParticle', function(id, dict, name, offsetX, offsetY, offsetZ, rotX, rotY, rotZ, scale)
+    local _, object = getObject(id)
+
+    if object and not object.particle and dict and name then
+        object.particle = {
+            dict = dict,
+            name = name,
+            offsetX = offsetX or 0.0,
+            offsetY = offsetY or 0.0,
+            offsetZ = offsetZ or 0.0,
+            rotX = rotX or 0.0,
+            rotY = rotY or 0.0,
+            rotZ = rotZ or 0.0,
+            scale = scale or 1.0
+        }
+        lib.requestNamedPtfxAsset(object.particle.dict, 1000)
+        UseParticleFxAssetNextCall(object.particle.dict)
+        object.particle.particle = StartParticleFxLoopedOnEntity(object.particle.name, object.object, object.particle.offsetX, object.particle.offsetY, object.particle.offsetZ, object.particle.rotX, object.particle.rotY, object.particle.rotZ, object.particle.scale, 0.0, 0.0, 0.0)
+    end
+end)
+
+---Removes a particle from an object
+---@param id string
+exports('removeObjectParticle', function(id)
+    local _, object = getObject(id)
+
+    if object and object.particle then
+        StopParticleFxLooped(object.particle.particle, 0)
+        object.particle = nil
+    end
+end)
 
 ---Deletes an object and removes it from the list if the object comes from the same resource
 ---@param resourceName string
