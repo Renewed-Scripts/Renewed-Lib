@@ -33,12 +33,16 @@ end)
 ---@return boolean
 exports('removeMoney', function(source, amount, moneyType, reason)
     if moneyType == 'bank' then
-        local Player = Ox.GetPlayer(source)
+        local account = Ox.GetCharacterAccount(source)
 
-        if Player then
-            Ox.RemoveAccountBalance(Player.getAccount(), -amount, reason)
+        if account then
+            return account.removeBalance({
+                amount = amount,
+                message = reason,
+                overdraw = false
+              }).success
         end
-    else -- cash
+    else
         return exports.ox_inventory:RemoveItem(source, 'money', amount)
     end
 
@@ -53,12 +57,15 @@ end)
 ---@return boolean
 exports('addMoney', function(source, amount, moneyType, reason)
     if moneyType == 'bank' then
-        local Player = Ox.GetPlayer(source)
+        local account = Ox.GetCharacterAccount(source)
 
-        if Player then
-            Ox.AddAccountBalance(Player.getAccount(), -amount, reason)
+        if account then
+            account.addBalance({
+                amount = amount,
+                message = reason
+              }).success
         end
-    else -- cash
+    else
         return exports.ox_inventory:AddItem(source, 'money', amount)
     end
 
