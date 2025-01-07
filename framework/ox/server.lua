@@ -60,7 +60,7 @@ exports('addMoney', function(source, amount, moneyType, reason)
         local account = Ox.GetCharacterAccount(source)
 
         if account then
-            account.addBalance({
+            return account.addBalance({
                 amount = amount,
                 message = reason
               }).success
