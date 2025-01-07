@@ -1,5 +1,5 @@
 local Controller = require 'framework.client'
-local Ox = require '@ox_core/lib/init.lua'
+local Ox = require '@ox_core.lib.init'
 
 
 RegisterNetEvent('ox:setGroup', function(name, grade)
