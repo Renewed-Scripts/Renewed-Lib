@@ -77,6 +77,7 @@ AddEventHandler('ox:playerLoaded', function(source)
 
     if Player then
         Controller.createPlayer({
+            source = source,
             Groups = Player.getGroups(),
             charId = Player.stateId,
             name = Player.get('fullName'),
