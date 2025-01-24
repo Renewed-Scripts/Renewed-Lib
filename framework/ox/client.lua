@@ -6,8 +6,8 @@ RegisterNetEvent('ox:setGroup', function(name, grade)
     local Player = Controller.getPlayer()
 
     if Player then
-        Player.group[name] = grade
-        TriggerEvent('Renewed-Lib:client:UpdateGroup', Player.group)
+        Player.Groups[name] = grade
+        TriggerEvent('Renewed-Lib:client:UpdateGroup', Player.Groups)
     end
 end)
 
