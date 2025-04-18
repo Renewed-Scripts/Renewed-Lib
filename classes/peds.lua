@@ -44,7 +44,7 @@ function peds_class:constructor(payload)
 
     self.target = payload.target
     self.interact = payload.interact
-    self.onSpawn = objectData.onSpawn
+    self.onSpawn = payload.onSpawn
 end
 
 
