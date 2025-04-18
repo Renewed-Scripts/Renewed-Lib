@@ -17,6 +17,7 @@
 ---@field onEnter function
 ---@field instance number | string
 ---@field onExit function
+---@field onSpawn function
 ---@field resource string
 local object_class = lib.class('renewed_objects')
 
@@ -51,6 +52,7 @@ function object_class:constructor(objectData)
     -- Target and Interact support
     self.target = objectData.target
     self.interact = objectData.interact
+    self.onSpawn = objectData.onSpawn
 end
 
 return object_class

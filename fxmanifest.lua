@@ -14,6 +14,7 @@ shared_script {
 
 client_scripts {
     'modules/**/client.lua',
+    'modules/**/config.lua',
     'groups/client.lua'
 }
 

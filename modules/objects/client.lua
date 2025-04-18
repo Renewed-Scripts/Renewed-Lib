@@ -101,6 +101,10 @@ local function createObject(self)
         RemoveNamedPtfxAsset(self.particle.dict)
     end
 
+    if self.onSpawn then
+        self.onSpawn(self)
+    end
+
     self.object = obj
 end
 
@@ -111,7 +115,7 @@ local function deleteObject(self)
         if self.particle then
             StopParticleFxLooped(self.particle.particle, 0)
         end
-        
+
         SetEntityAsMissionEntity(self.object, false, true)
         DeleteEntity(self.object)
         if self.target then
@@ -152,7 +156,7 @@ end)
 ---@param payload renewed_objects
 exports('addObject', function(payload)
     -- If table is not an array we convert it into one
-    payload = table.type(payload) == 'array' and payload or {payload}
+    payload = table.type(payload) == 'array' and payload or { payload }
 
     for i = 1, #payload do
         ---@diagnostic disable-next-line: invisible
@@ -162,9 +166,52 @@ exports('addObject', function(payload)
         object.onExit = deleteObject
         object.resource = GetInvokingResource() or GetCurrentResourceName()
 
-        objects[#objects+1] = lib.points.new(object)
+        objects[#objects + 1] = lib.points.new(object)
     end
 end)
+
+---Returns the object from the entity
+---@param entity number?
+---@return renewed_objects?
+exports('getObjectFromEntity', function(entity)
+    for i = 1, #objects do
+        local object = objects[i]
+
+        if object.object and object.object == entity then
+            return object
+        end
+    end
+
+    return nil
+end)
+
+---Returns a list of objects in a given area
+---@param coords vector3
+---@param distance number?
+---@return renewed_objects[]
+exports('getObjectsInArea', function(coords, distance)
+    if not coords then
+        return {}
+    end
+
+    distance = distance or 5.0
+
+    local objectsInArea = {}
+    local count = 0
+
+    for i = 1, #objects do
+        local object = objects[i]
+
+
+        if #(object.coords - coords) < distance then
+            count += 1
+            objectsInArea[count] = object
+        end
+    end
+
+    return objectsInArea
+end)
+
 
 ---Adds a particle to an object
 ---@param id string
@@ -243,5 +290,4 @@ AddStateBagChangeHandler('instance', ('player:%s'):format(cache.serverId), funct
             end
         end
     end
-  end)
-
+end)

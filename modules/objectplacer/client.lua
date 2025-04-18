@@ -85,6 +85,7 @@ exports('placeObject', function(object, dist, snapGround, text, allowedMats, off
                 if not outLine and (not allowedMats or allowedMats[materialHash]) and distCheck < checkDist then
                     finishPlacing()
 
+---@diagnostic disable-next-line: redundant-return-value
                     return coords, heading
                 end
             end
@@ -92,6 +93,7 @@ exports('placeObject', function(object, dist, snapGround, text, allowedMats, off
             if IsControlJustReleased(0, 73) then
                 finishPlacing()
 
+---@diagnostic disable-next-line: redundant-return-value
                 return nil, nil
             end
 

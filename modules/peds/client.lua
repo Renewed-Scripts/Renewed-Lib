@@ -12,7 +12,7 @@ local requestTimeouts = GetConvarInt('renewed_requesttimeouts', 10000)
 local function spawnPed(self)
     lib.requestModel(self.model, requestTimeouts)
 
-    local ped = CreatePed(0, self.model, self.coords.x, self.coords.y, self.coords.z, self.heading, false, true)
+    local ped = CreatePed(0, self.model, self.coords.x, self.coords.y, self.snapToGround and self.coords.z - 1 or self.coords.z, self.heading, false, true)
 
     FreezeEntityPosition(ped, self.freeze)
     SetEntityInvincible(ped, self.invincible)
@@ -35,6 +35,10 @@ local function spawnPed(self)
     if useInteract and self.interact then
         self.interact.entity = ped
         exports.interact:AddLocalEntityInteraction(self.interact)
+    end
+
+    if self.onSpawn then
+        self.onSpawn(self)
     end
 
     SetModelAsNoLongerNeeded(self.model)

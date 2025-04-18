@@ -51,7 +51,7 @@ function Controller.hasGroup(group, grade)
 end exports('hasGroup', Controller.hasGroup)
 
 ---Creates the player object
----@param data framework_class
+---@param data { charId: string, name: string, job: string, groups: table<string, number> }
 function Controller.createPlayer(data)
 ---@diagnostic disable-next-line: invisible
     Player = framework:new(data)

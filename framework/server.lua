@@ -74,10 +74,16 @@ exports('getPlayerFromCharId', function(charId)
     end
 end)
 
+---Gets the framework the server is using
+exports('getFramework', function()
+    return GetConvar('renewed_framework', 'none')
+end)
+
+
 
 
 ---Creates a player object and assigns it to the class
----@param data framework_class
+---@param data { source: number, charId: string, name: string, job: string, groups: table<string, number> }
 function Controller.createPlayer(data)
 ---@diagnostic disable-next-line: invisible
     Players[data.source] = framework:new(data)

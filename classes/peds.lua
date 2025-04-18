@@ -3,6 +3,7 @@
 ---@class renewed_peds : OxClass
 ---@field coords vector3 | vector4
 ---@field heading number
+---@field snapToGround boolean
 ---@field pedId string
 ---@field distance number
 ---@field freeze boolean?
@@ -17,6 +18,7 @@
 ---@field instance number | string
 ---@field onExit function
 ---@field resource string
+---@field onSpawn function
 ---@field entity number | nil entity node
 local peds_class = lib.class('renewed_peds')
 
@@ -29,6 +31,7 @@ function peds_class:constructor(payload)
     self.model = payload.model
     self.coords = payload.coords.xyz
     self.heading = payload.coords?.w or payload.heading
+    self.snapToGround = payload.snapToGround or false
     self.pedId = payload.id
 
     self.freeze = payload.freeze or false
@@ -41,6 +44,7 @@ function peds_class:constructor(payload)
 
     self.target = payload.target
     self.interact = payload.interact
+    self.onSpawn = objectData.onSpawn
 end
 
 
