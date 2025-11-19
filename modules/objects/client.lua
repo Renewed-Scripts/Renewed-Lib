@@ -73,6 +73,7 @@ local function createObject(self)
 
     FreezeEntityPosition(obj, self.freeze)
     SetCanClimbOnEntity(obj, self.canClimb)
+    SetEntityCanBeDamaged(obj, not self.invincible)
 
     if type(self.colissions) == 'boolean' then
         SetEntityCollision(obj, self.colissions, self.colissions)
@@ -101,11 +102,11 @@ local function createObject(self)
         RemoveNamedPtfxAsset(self.particle.dict)
     end
 
+    self.object = obj
+
     if self.onSpawn then
         self.onSpawn(self)
     end
-
-    self.object = obj
 end
 
 ---Deletes the spawned object if its spawned

@@ -37,13 +37,13 @@ local function spawnPed(self)
         exports.interact:AddLocalEntityInteraction(self.interact)
     end
 
+    self.entity = ped
+
     if self.onSpawn then
         self.onSpawn(self)
     end
 
     SetModelAsNoLongerNeeded(self.model)
-
-    self.entity = ped
 end
 
 ---Deletes the ped on exit

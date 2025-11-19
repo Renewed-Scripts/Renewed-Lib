@@ -43,6 +43,7 @@ function object_class:constructor(objectData)
     self.canClimb = objectData.canClimb or false
     self.colissions = objectData.colissions
     self.hasAnim = objectData.anim and objectData.animSpeed and true or false
+    self.invincible = objectData.invincible or false
 
     if self.hasAnim then
         self.anim = objectData.anim
