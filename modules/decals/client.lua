@@ -258,14 +258,14 @@ exports('placeDecal', function(data)
     local activeDims = vec2(activeScale * (activeRes.x / activeRes.y), activeScale)
 
     placingDec = true
+    OxTxt = {
+        (data.title and (data.title .. '  \n') or '-- Place Decal --  \n'),
+        (data.placeLabel and (data.placeLabel .. '  \n') or '[E] Place  \n'),
+        '[X] Cancel  \n',
+    }
     if allowRescale then
-        OxTxt = {
-            '-- Place Decal --  \n',
-            '[E] Place  \n',
-            '[X] Cancel  \n',
-            '[SCROLL UP] Increase size  \n',
-            '[SCROLL DOWN] Decrease size'
-        }
+        OxTxt[4] = '[SCROLL UP] Increase size  \n'
+        OxTxt[5] = '[SCROLL DOWN] Decrease size'
     end
     local txt = text or OxTxt
     lib.showTextUI(type(txt) == 'table' and table.concat(txt) or txt, {
